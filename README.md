@@ -1,5 +1,5 @@
-# 💫 About Me:
-Hi there! 👋 I’m a Staff Software Engineer at Synopsys Inc. with expertise in Full-Stack Development, system design, and data structures and algorithms. I enjoy building scalable websites and systems that solve real-world problems.
+## Hi, I'm Aniket 👋
+I’m a Staff Software Engineer at Synopsys Inc. with expertise in Full-Stack Development, system design, and data structures and algorithms. I enjoy building scalable websites and systems that solve real-world problems.
 
 
 ----
