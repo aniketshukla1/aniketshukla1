@@ -19,11 +19,19 @@ python3 scripts/make_profile.py
 
 The daily contribution generator uses Python 3.11+ and its standard library. The portrait generator requires Pillow locally (`python3 -m pip install -r scripts/requirements-portrait.txt`).
 
+To change profile details, edit `ROWS` in `scripts/make_profile.py` and run it again. The included background mask follows the current GitHub avatar. To change the photo, replace `data/avatar.png` with a transparent PNG; the generator uses its alpha channel automatically. `STATIC=1 python3 scripts/make_profile.py` generates a frozen portrait and card for local previews; run without `STATIC` again before committing.
+
 ## Files
 
 - `scripts/update_contributions.py`: fetch, validate, summarize, and render the rolling GitHub calendar.
 - `scripts/make_profile.py`: regenerate the portrait and info card from `data/avatar.png` and the details at the top of the script.
 - `data/contributions.json`: dated source data behind the graph, committed with the SVG.
 - `.github/workflows/update-profile-art.yml`: checks and daily refresh.
+
+## Daily refresh
+
+The workflow runs around **11:47 IST** (06:17 UTC) and supports a manual run from the Actions tab. Only the graph and its data change daily; the portrait and card stay committed. GitHub supplies the workflow's built-in repository token for the commit, so no personal access token or secret needs to be added. Pull requests run checks with read permissions; only main-branch refreshes can write. An HTTP, parsing, or validation error fails the run and leaves the last good art in place.
+
+For a local `CERTIFICATE_VERIFY_FAILED` error, use Python with a configured trusted certificate store (the Codex bundled runtime was verified). Keep TLS verification enabled.
 
 Content stays in the existing profile repository, `aniketshukla1/aniketshukla1`. Never publish invented achievements, private repository details, credentials, or the blog URL's access token.
