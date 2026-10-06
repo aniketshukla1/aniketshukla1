@@ -4,7 +4,7 @@ Recreates the [terminal profile from Avi Vashishta's blog](https://www.avivashis
 
 ## What must work
 
-1. Real daily contribution counts render as a calendar with correct totals and streaks. An expandable daily calendar exposes exact dates and counts through native image tooltips. Invalid or incomplete GitHub HTML fails before replacing saved data.
+1. One animated contribution calendar exposes exact day/date counts through native image tooltips, with correct totals and streaks. Invalid or incomplete GitHub HTML fails before replacing saved data.
 2. A monochrome ASCII portrait prints once, alongside an info card revealing Aniket's existing profile details.
 3. All SVGs are self-contained, readable without animation, and honor reduced motion. The README provides descriptive image alternatives.
 4. GitHub Actions validates the generator and refreshes the graph daily without a personal access token or third-party stats service.
@@ -37,7 +37,7 @@ The README uses `<picture>` to select the same SVG's `#static` view when reduced
 
 The workflow runs around **11:47 IST** (06:17 UTC) and supports a manual run from the Actions tab. The graph, its data, and the README's `DAILY-COUNTS` section refresh together; the portrait and cards stay committed. GitHub supplies the workflow's built-in repository token for the commit, so no personal access token or secret needs to be added. Pull requests run checks with read permissions; only main-branch refreshes can write. An HTTP, parsing, or validation error fails the run and leaves the last good art in place.
 
-Open **Daily counts — hover a square** below the animated graph to see date/count tooltips on each day. The grid reuses six small SVG tiles; hovering uses native HTML `title` attributes, because an SVG embedded as one image cannot expose its internal day tooltips in a README. It shows the same rolling calendar as the animation. Each day links to its GitHub activity. On narrow screens the expanded calendar scrolls horizontally.
+The README assembles one animated chart from named views of `contrib-heatmap.svg`. Each day is its own image with a native date/count tooltip; the header, weekday labels, animation, and footer come from the same SVG. There is no second chart. The SVG omits fixed width/height so a view's aspect ratio survives GitHub's forced `height: auto`. Reduced-motion sources select static views. A content hash in image URLs avoids stale cached art after a refresh. On narrow screens the chart scrolls horizontally.
 
 For a local `CERTIFICATE_VERIFY_FAILED` error, use Python with a configured trusted certificate store (the Codex bundled runtime was verified). Keep TLS verification enabled.
 

@@ -51,7 +51,13 @@ def check():
     assert len(cells) == 3
     assert {cell.attrib["title"] for cell in cells} == {
         "2026-10-03: 1,234 contributions", "2026-10-04: 1 contribution", "2026-10-05: 0 contributions"}
-    assert {cell.attrib["src"] for cell in cells} == {f"./data/contribution-tiles/{level}.svg" for level in (0, 2, 4)}
+    assert {cell.attrib["src"].split('#')[1] for cell in cells} == {f"day-{day['date']}" for day in days}
+    assert all(cell.attrib['src'].startswith('./contrib-heatmap.svg?v=') for cell in cells)
+    assert "width" not in root.attrib and "height" not in root.attrib
+    assert not hover.findall('.//details')
+    for cell in cells:
+        view = root.find('.//{http://www.w3.org/2000/svg}view[@id="' + cell.attrib['src'].split('#')[1] + '"]')
+        assert view is not None
     # Refreshes must preserve profile text and project cards outside the calendar.
     document = "bio\n" + HOVER_START + "old calendar" + HOVER_END + "\nprojects"
     updated = update_readme(document, {"username": "aniketshukla1", "days": days, "stats": stats})
