@@ -1,5 +1,7 @@
 """Small offline regression check for the public calendar's trust boundary."""
 from datetime import date
+import json
+from pathlib import Path
 from xml.etree import ElementTree as ET
 
 from update_contributions import parse_calendar, summarize, render_heatmap
@@ -44,6 +46,19 @@ def check():
     assert '1,235 contributions' in svg
     assert 'prefers-reduced-motion' in svg
     assert '<script' not in svg
+    saved = json.loads((Path(__file__).resolve().parents[1] / "data/contributions.json").read_text())
+    assert saved["stats"] == summarize(saved["days"], date.fromisoformat(saved["generated_on"]))
+    assert (Path(__file__).resolve().parents[1] / "contrib-heatmap.svg").read_text() == render_heatmap(saved)
+    # The shipped images must work inside GitHub's image-only README sandbox.
+    for path in Path(__file__).resolve().parents[1].glob("*.svg"):
+        root = ET.parse(path).getroot()
+        assert root.find("{http://www.w3.org/2000/svg}title") is not None
+        assert root.find("{http://www.w3.org/2000/svg}desc") is not None
+        assert "prefers-reduced-motion" in path.read_text()
+        for element in root.iter():
+            assert element.tag.split("}")[-1] not in {"script", "foreignObject"}
+            assert not any(key.split("}")[-1].startswith("on") for key in element.attrib)
+            assert not any(value.startswith(("http:", "https:", "//")) for key, value in element.attrib.items() if key.split("}")[-1] == "href")
     print("Calendar parsing, totals, streaks, invalid-data rejection, and SVG checks passed.")
 
 

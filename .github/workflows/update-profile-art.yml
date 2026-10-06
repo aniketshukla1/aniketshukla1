@@ -1,0 +1,61 @@
+name: Update profile art
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # 11:47 IST; GitHub may delay scheduled runs.
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - ".github/workflows/update-profile-art.yml"
+  pull_request:
+    paths:
+      - "scripts/**"
+      - ".github/workflows/update-profile-art.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile-art-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Check calendar logic and profile assets
+        run: python scripts/test_profile.py
+
+  refresh:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Refresh public contribution calendar
+        run: python scripts/update_contributions.py
+      - name: Commit refreshed art when it changed
+        run: |
+          git add data/contributions.json contrib-heatmap.svg
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'chore: refresh contribution graph [skip ci]'
+          git push
