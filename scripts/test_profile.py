@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from update_contributions import parse_calendar, summarize, render_heatmap
+from update_contributions import parse_calendar, summarize, render_heatmap, render_hover_calendar, update_readme, HOVER_START, HOVER_END
 
 
 def check():
@@ -46,7 +46,29 @@ def check():
     assert '1,235 contributions' in svg
     assert 'prefers-reduced-motion' in svg
     assert '<script' not in svg
+    hover = ET.fromstring(render_hover_calendar({"username": "aniketshukla1", "days": days, "stats": stats}))
+    cells = hover.findall('.//img[@title]')
+    assert len(cells) == 3
+    assert {cell.attrib["title"] for cell in cells} == {
+        "2026-10-03: 1,234 contributions", "2026-10-04: 1 contribution", "2026-10-05: 0 contributions"}
+    assert {cell.attrib["src"] for cell in cells} == {f"./data/contribution-tiles/{level}.svg" for level in (0, 2, 4)}
+    # Refreshes must preserve profile text and project cards outside the calendar.
+    document = "bio\n" + HOVER_START + "old calendar" + HOVER_END + "\nprojects"
+    updated = update_readme(document, {"username": "aniketshukla1", "days": days, "stats": stats})
+    assert updated.startswith("bio\n" + HOVER_START)
+    assert updated.endswith(HOVER_END + "\nprojects")
+    try:
+        update_readme("no markers", {})
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Missing calendar markers were accepted")
     saved = json.loads((Path(__file__).resolve().parents[1] / "data/contributions.json").read_text())
+    readme = (Path(__file__).resolve().parents[1] / "README.md").read_text()
+    actual_calendar = ET.fromstring(readme.split(HOVER_START, 1)[1].split(HOVER_END, 1)[0].strip())
+    actual_cells = actual_calendar.findall('.//img[@title]')
+    assert len(actual_cells) == len(saved["days"])
+    assert sum(int(cell.attrib["title"].split(": ")[1].split()[0].replace(",", "")) for cell in actual_cells) == saved["stats"]["total"]
     assert saved["stats"] == summarize(saved["days"], date.fromisoformat(saved["generated_on"]))
     assert (Path(__file__).resolve().parents[1] / "contrib-heatmap.svg").read_text() == render_heatmap(saved)
     # The shipped images must work inside GitHub's image-only README sandbox.
@@ -59,7 +81,7 @@ def check():
             assert element.tag.split("}")[-1] not in {"script", "foreignObject"}
             assert not any(key.split("}")[-1].startswith("on") for key in element.attrib)
             assert not any(value.startswith(("http:", "https:", "//")) for key, value in element.attrib.items() if key.split("}")[-1] == "href")
-    print("Calendar parsing, totals, streaks, invalid-data rejection, and SVG checks passed.")
+    print("Calendar parsing, totals, streaks, hover counts, README preservation, and SVG checks passed.")
 
 
 if __name__ == "__main__":

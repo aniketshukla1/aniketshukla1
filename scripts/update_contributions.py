@@ -10,6 +10,8 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 USERNAME = "aniketshukla1"
 PALETTE = ("#1b2530", "#0e4429", "#006d32", "#26a641", "#39d353")
+HOVER_START = "<!-- DAILY-COUNTS:START -->"
+HOVER_END = "<!-- DAILY-COUNTS:END -->"
 
 
 class CalendarParser(HTMLParser):
@@ -133,6 +135,47 @@ text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation 
     return '\n'.join(svg) + '\n'
 
 
+def render_hover_calendar(data):
+    days = {date.fromisoformat(day["date"]): day for day in data["days"]}
+    first, last = min(days), max(days)
+    start = first - timedelta(days=(first.weekday() + 1) % 7)
+    weeks = (last - start).days // 7 + 1
+    rows = []
+    for row, label in enumerate(("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")):
+        cells = []
+        for col in range(weeks):
+            day = days.get(start + timedelta(days=col * 7 + row))
+            if day is None:
+                cells.append('<img src="./data/contribution-tiles/blank.svg" width="14" height="15" alt="" />')
+                continue
+            word = "contribution" if day["count"] == 1 else "contributions"
+            tooltip = f'{day["date"]}: {day["count"]:,} {word}'
+            url = f'https://github.com/{data["username"]}?tab=overview&amp;from={day["date"]}&amp;to={day["date"]}'
+            cells.append(f'<a href="{url}" title="{tooltip}"><img src="./data/contribution-tiles/{day["level"]}.svg" width="14" height="15" alt="{tooltip}" title="{tooltip}" /></a>')
+        rows.append(label + " " + ''.join(cells))
+    return ('<details>\n<summary>Daily counts — hover a square</summary>\n\n<div align="left"><pre>' +
+            '\n'.join(rows) + '</pre></div>\n\n' +
+            f'<p><sub>{data["stats"]["total"]:,} contributions · {first} to {last}. Click a day to view its activity on GitHub.</sub></p>\n</details>')
+
+
+def update_readme(markdown, data):
+    if markdown.count(HOVER_START) != 1 or markdown.count(HOVER_END) != 1:
+        raise ValueError("README needs one DAILY-COUNTS marker pair; keeping the existing files")
+    before, _, remainder = markdown.partition(HOVER_START)
+    _, found, after = remainder.partition(HOVER_END)
+    if not found:
+        raise ValueError("DAILY-COUNTS markers are out of order")
+    return before + HOVER_START + "\n" + render_hover_calendar(data) + "\n" + HOVER_END + after
+
+
+def write_tiles():
+    path = ROOT / "data/contribution-tiles"
+    path.mkdir(parents=True, exist_ok=True)
+    for level, color in enumerate(PALETTE):
+        (path / f"{level}.svg").write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15"><title>Contribution level {level}</title><rect x="1" y="1" width="12" height="12" rx="2" fill="{color}"/></svg>\n', encoding="utf-8")
+    (path / "blank.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15"><title>Outside the contribution date range</title></svg>\n', encoding="utf-8")
+
+
 def main():
     request = Request(f"https://github.com/users/{USERNAME}/contributions", headers={"User-Agent": "animated-profile-readme", "Accept-Language": "en-US"})
     with urlopen(request, timeout=30) as response:
@@ -143,9 +186,12 @@ def main():
     data = {"username": USERNAME, "generated_on": today.isoformat(),
             "source": request.full_url, "days": days, "stats": summarize(days, today)}
     svg = render_heatmap(data)
+    readme = update_readme((ROOT / "README.md").read_text(encoding="utf-8"), data)
     (ROOT / "data").mkdir(exist_ok=True)
+    write_tiles()
     (ROOT / "data/contributions.json").write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     (ROOT / "contrib-heatmap.svg").write_text(svg, encoding="utf-8")
+    (ROOT / "README.md").write_text(readme, encoding="utf-8")
     print(f"Saved {len(days)} days and {data['stats']['total']:,} contributions for {USERNAME}")
 
 
