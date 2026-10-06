@@ -1,0 +1,51 @@
+"""Small offline regression check for the public calendar's trust boundary."""
+from datetime import date
+from xml.etree import ElementTree as ET
+
+from update_contributions import parse_calendar, summarize, render_heatmap
+
+
+def check():
+    markup = '''
+    <td class="ContributionCalendar-day" data-date="2026-10-04" data-level="2" id="b"></td>
+    <td class="ContributionCalendar-day" data-date="2026-10-03" data-level="4" id="a"></td>
+    <td class="ContributionCalendar-day" data-date="2026-10-05" data-level="0" id="c"></td>
+    <tool-tip for="b">1 contribution on October 4th.</tool-tip>
+    <tool-tip for="c">No contributions on October 5th.</tool-tip>
+    <tool-tip for="a"><span>1,234 contributions</span> on October 3rd.</tool-tip>
+    '''
+    days = parse_calendar(markup)
+    assert [d["count"] for d in days] == [1234, 1, 0]
+    stats = summarize(days, date(2026, 10, 5))
+    assert stats == {"total": 1235, "active_days": 2, "current_streak": 2, "longest_streak": 2}
+    assert summarize(days, date(2026, 10, 6))["current_streak"] == 0
+    assert summarize([{"date": "2026-10-05", "count": 0, "level": 0}], date(2026, 10, 5))["longest_streak"] == 0
+
+    # GitHub markup changes must not silently turn real contributions into zeros.
+    for broken in (
+        "<html>rate limited</html>",
+        markup.replace('for="a"', 'for="missing"'),
+        markup.replace("1,234 contributions", "unexpected label"),
+        markup.replace('data-date="2026-10-04"', 'data-date="2026-10-03"'),
+        markup.replace('data-date="2026-10-03"', 'data-date="2026-10-01"'),
+        markup.replace('data-level="4"', 'data-level="9"'),
+    ):
+        try:
+            parse_calendar(broken)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Invalid calendar was accepted")
+
+    svg = render_heatmap({"username": "aniketshukla1", "days": days, "stats": stats})
+    root = ET.fromstring(svg)
+    cells = root.findall('.//{http://www.w3.org/2000/svg}rect[@class="day"]')
+    assert len(cells) == 3
+    assert '1,235 contributions' in svg
+    assert 'prefers-reduced-motion' in svg
+    assert '<script' not in svg
+    print("Calendar parsing, totals, streaks, invalid-data rejection, and SVG checks passed.")
+
+
+if __name__ == "__main__":
+    check()
