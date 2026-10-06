@@ -19,9 +19,29 @@
 
 <br />
 
+<h3><code>aniket@github ~ $ ls ~/projects</code></h3>
+
+<a href="https://github.com/mnesio/mnesio">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="./mnesio-card.svg#static" />
+    <img src="./mnesio-card.svg" width="860" alt="mnesio logo and project card: long-term memory that helps AI agents learn from outcomes and improve their policies through a safety gate. Rust core, MCP server, Python and Node SDKs. Open the mnesio repository." />
+  </picture>
+</a>
+
+<br /><br />
+
+<a href="https://github.com/aniketshukla1/ferro">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="./ferro-card.svg#static" />
+    <img src="./ferro-card.svg" width="860" alt="ferro logo and project card: a private, local workspace for reviewing code changes, exploring diffs, catching broken callers, and checking tests and security before pushing. Rust core with GitHub and GitLab support. Open the ferro repository." />
+  </picture>
+</a>
+
+<br />
+
 <h3><code>aniket@github ~ $ ./links.sh</code></h3>
 
-<p><a href="https://github.com/aniketshukla1/mnesio">mnesio</a> · <a href="https://github.com/aniketshukla1?tab=repositories">Projects</a> · <a href="https://x.com/aniket_shukla_">X</a> · <a href="https://instagram.com/itsaniketshuklaa">Instagram</a></p>
+<p><a href="https://github.com/mnesio/mnesio">mnesio</a> · <a href="https://github.com/aniketshukla1/ferro">ferro</a> · <a href="https://github.com/aniketshukla1?tab=repositories">Projects</a> · <a href="https://x.com/aniket_shukla_">X</a> · <a href="https://instagram.com/itsaniketshuklaa">Instagram</a></p>
 
 <p><sub>Staff Software Engineer · Full-Stack Development · Scalable Systems</sub></p>
 

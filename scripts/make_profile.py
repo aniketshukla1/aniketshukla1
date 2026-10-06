@@ -3,8 +3,6 @@ from html import escape
 import os
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageEnhance, ImageOps
-
 ROOT = Path(__file__).resolve().parents[1]
 STATIC = os.environ.get("STATIC") == "1"
 ROWS = (
@@ -18,8 +16,8 @@ ROWS = (
 )
 
 
-def frame(width, title, description):
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" id="static" width="{width}" height="420" viewBox="0 0 {width} 420" role="img" aria-labelledby="title desc">
+def frame(width, title, description, height=420):
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" id="static" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
 <title id="title">{escape(title)}</title><desc id="desc">{escape(description)}</desc>
 <style>
 text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }}
@@ -32,13 +30,15 @@ text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation 
 @media (prefers-reduced-motion: reduce) {{ .line {{ animation: none; }} .cursor {{ display: none; }} .wipe {{ display: none; }} }}
 {'* { animation: none !important; } .wipe, .cursor { display: none; }' if STATIC else ''}
 </style>
-<rect x=".5" y=".5" width="{width - 1}" height="419" rx="12" fill="#0d1117" stroke="#30363d"/>
+<rect x=".5" y=".5" width="{width - 1}" height="{height - 1}" rx="12" fill="#0d1117" stroke="#30363d"/>
 <path d="M1 44H{width - 1}" stroke="#30363d"/>
 <circle cx="22" cy="23" r="4" fill="#ff5f57"/><circle cx="37" cy="23" r="4" fill="#febc2e"/><circle cx="52" cy="23" r="4" fill="#28c840"/>
 <text x="72" y="28" font-size="12" style="fill:#8b949e">{escape(title)}</text>'''
 
 
 def portrait():
+    from PIL import Image, ImageDraw, ImageEnhance, ImageOps
+
     image = ImageOps.fit(Image.open(ROOT / "data/avatar.png"), (460, 460)).convert("RGBA")
     if image.getextrema()[3][0] < 255:
         mask = image.getchannel("A")

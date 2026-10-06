@@ -8,6 +8,7 @@ Recreates the [terminal profile from Avi Vashishta's blog](https://www.avivashis
 2. A monochrome ASCII portrait prints once, alongside an info card revealing Aniket's existing profile details.
 3. All SVGs are self-contained, readable without animation, and honor reduced motion. The README provides descriptive image alternatives.
 4. GitHub Actions validates the generator and refreshes the graph daily without a personal access token or third-party stats service.
+5. mnesio and ferro have linked project cards with their official logos on the left and accurate descriptions on the right.
 
 ## Commands
 
@@ -15,6 +16,7 @@ Recreates the [terminal profile from Avi Vashishta's blog](https://www.avivashis
 python3 scripts/test_profile.py
 python3 scripts/update_contributions.py
 python3 scripts/make_profile.py
+python3 scripts/make_projects.py
 ```
 
 The daily contribution generator uses Python 3.11+ and its standard library. The portrait generator requires Pillow locally (`python3 -m pip install -r scripts/requirements-portrait.txt`).
@@ -27,6 +29,7 @@ The README uses `<picture>` to select the same SVG's `#static` view when reduced
 
 - `scripts/update_contributions.py`: fetch, validate, summarize, and render the rolling GitHub calendar.
 - `scripts/make_profile.py`: regenerate the portrait and info card from `data/avatar.png` and the details at the top of the script.
+- `scripts/make_projects.py`: regenerate the two project cards using Python's standard library and committed logos.
 - `data/contributions.json`: dated source data behind the graph, committed with the SVG.
 - `.github/workflows/update-profile-art.yml`: checks and daily refresh.
 
@@ -37,3 +40,9 @@ The workflow runs around **11:47 IST** (06:17 UTC) and supports a manual run fro
 For a local `CERTIFICATE_VERIFY_FAILED` error, use Python with a configured trusted certificate store (the Codex bundled runtime was verified). Keep TLS verification enabled.
 
 Content stays in the existing profile repository, `aniketshukla1/aniketshukla1`. Never publish invented achievements, private repository details, credentials, or the blog URL's access token.
+
+## Project cards
+
+Edit the descriptions in `PROJECTS` in `scripts/make_projects.py`, then run the script. Each logo is embedded in the generated SVG, so the cards stay self-contained. Their reveal animation and `#static` reduced-motion view reuse the profile's terminal frame.
+
+The mnesio logo comes from [its brand avatar](https://github.com/aniketshukla1/mnesio/blob/main/website/public/brand/avatar-400.png); ferro uses [its desktop app icon](https://github.com/aniketshukla1/ferro/blob/main/apps/desktop/src-tauri/icons/128x128%402x.png). Descriptions follow the projects' current READMEs: [mnesio](https://github.com/mnesio/mnesio), [ferro](https://github.com/aniketshukla1/ferro).
