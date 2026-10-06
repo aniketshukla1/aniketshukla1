@@ -93,12 +93,13 @@ def render_heatmap(data):
     weeks = (end - start).days // 7 + 1
     step = 740 / weeks
     total = f'{stats["total"]:,} contributions'
-    svg = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="860" height="272" viewBox="0 0 860 272" role="img" aria-labelledby="title desc">
+    svg = [f'''<svg xmlns="http://www.w3.org/2000/svg" id="static" width="860" height="272" viewBox="0 0 860 272" role="img" aria-labelledby="title desc">
 <title id="title">{escape(data['username'])}'s contribution calendar</title>
 <desc id="desc">{total} from {first} to {end}. Current streak: {stats['current_streak']} days. Longest streak: {stats['longest_streak']} days.</desc>
 <style>
 text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }}
 .day {{ animation: reveal .35s ease-out both; }}
+:root:target .day {{ animation: none; }}
 @keyframes reveal {{ from {{ opacity: 0; transform: translateY(-6px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 @media (prefers-reduced-motion: reduce) {{ .day {{ animation: none; }} }}
 </style>
@@ -137,7 +138,7 @@ def main():
     with urlopen(request, timeout=30) as response:
         days = parse_calendar(response.read().decode("utf-8"))
     today = datetime.now(timezone.utc).date()
-    if not 350 <= len(days) <= 371 or date.fromisoformat(days[-1]["date"]) < today - timedelta(days=1):
+    if not 365 <= len(days) <= 372 or abs((date.fromisoformat(days[-1]["date"]) - today).days) > 1:
         raise ValueError("Calendar is incomplete or stale; keeping the existing profile art")
     data = {"username": USERNAME, "generated_on": today.isoformat(),
             "source": request.full_url, "days": days, "stats": summarize(days, today)}

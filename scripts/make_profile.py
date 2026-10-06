@@ -19,11 +19,13 @@ ROWS = (
 
 
 def frame(width, title, description):
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="420" viewBox="0 0 {width} 420" role="img" aria-labelledby="title desc">
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" id="static" width="{width}" height="420" viewBox="0 0 {width} 420" role="img" aria-labelledby="title desc">
 <title id="title">{escape(title)}</title><desc id="desc">{escape(description)}</desc>
 <style>
 text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }}
 .line {{ animation: print .4s ease-out both; }}
+:root:target .line {{ animation: none; }}
+:root:target .wipe, :root:target .cursor {{ display: none; }}
 @keyframes print {{ from {{ opacity: 0; transform: translateY(4px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 .cursor {{ animation: cursor 4.2s step-end forwards; }}
 @keyframes cursor {{ 0%, 40%, 80% {{ opacity: 1; }} 20%, 60%, 100% {{ opacity: 0; }} }}

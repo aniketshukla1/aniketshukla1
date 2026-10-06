@@ -21,6 +21,8 @@ The daily contribution generator uses Python 3.11+ and its standard library. The
 
 To change profile details, edit `ROWS` in `scripts/make_profile.py` and run it again. The included background mask follows the current GitHub avatar. To change the photo, replace `data/avatar.png` with a transparent PNG; the generator uses its alpha channel automatically. `STATIC=1 python3 scripts/make_profile.py` generates a frozen portrait and card for local previews; run without `STATIC` again before committing.
 
+The README uses `<picture>` to select the same SVG's `#static` view when reduced motion is enabled. Its `:target` rules disable animations without duplicating images. This also covers browsers that do not pass the motion preference into embedded SVGs.
+
 ## Files
 
 - `scripts/update_contributions.py`: fetch, validate, summarize, and render the rolling GitHub calendar.

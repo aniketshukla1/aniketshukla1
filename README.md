@@ -1,7 +1,10 @@
 <div align="center">
 
 <h3><code>aniket@github ~ $ ./contributions.sh</code></h3>
-<img src="./contrib-heatmap.svg" width="860" alt="Aniket's contribution calendar for the last twelve months, with contribution totals and current and longest streaks" />
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./contrib-heatmap.svg#static" />
+  <img src="./contrib-heatmap.svg" width="860" alt="Aniket's contribution calendar for the last twelve months, with contribution totals and current and longest streaks" />
+</picture>
 
 <br /><br />
 
@@ -9,8 +12,8 @@
 
 <table>
   <tr>
-    <td valign="top"><img src="./aniket-ascii.svg" width="370" alt="Aniket Shukla's monochrome ASCII portrait, animated row by row" /></td>
-    <td valign="top"><img src="./info-card.svg" width="490" alt="Aniket Shukla · Staff Software Engineer at Synopsys Inc. · Bangalore · AI x Stuff · Python, Rust, Go, JavaScript · Building mnesio and Superuser · Full-Stack Development, System Design, DSA" /></td>
+    <td valign="top"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./aniket-ascii.svg#static" /><img src="./aniket-ascii.svg" width="370" alt="Aniket Shukla's monochrome ASCII portrait, animated row by row" /></picture></td>
+    <td valign="top"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./info-card.svg#static" /><img src="./info-card.svg" width="490" alt="Aniket Shukla · Staff Software Engineer at Synopsys Inc. · Bangalore · AI x Stuff · Python, Rust, Go, JavaScript · Building mnesio and Superuser · Full-Stack Development, System Design, DSA" /></picture></td>
   </tr>
 </table>
 
