@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="static" width="490" height="420" viewBox="0 0 490 420" role="img" aria-labelledby="title desc">
-<title id="title">neofetch --user aniket</title><desc id="desc">Aniket Shukla. Role: Staff Software Engineer. Now: Synopsys Inc.. Based: Bangalore, India. Focus: AI x Stuff. Stack: Python / Rust / Go / JavaScript. Build: mnesio / Superuser. Craft: Full-Stack / System Design / DSA</desc>
+<title id="title">neofetch --user aniket</title><desc id="desc">Aniket Shukla. Role: Staff Software Engineer. Now: Synopsys Inc.. Based: Bangalore, India. Focus: AI memory / developer tools. Stack: Python / Rust / Go / JavaScript. Build: mnesio / ferro / Superuser. Craft: Full-Stack / System Design / DSA</desc>
 <style>
 text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }
 .line { animation: print .4s ease-out both; }
@@ -21,9 +21,9 @@ text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
 <g class="line" style="animation-delay:0.30s"><text x="26" y="155" font-size="12" style="fill:#7ee787">Role</text><text x="99" y="155" font-size="12">Staff Software Engineer</text></g>
 <g class="line" style="animation-delay:0.45s"><text x="26" y="183" font-size="12" style="fill:#7ee787">Now</text><text x="99" y="183" font-size="12">Synopsys Inc.</text></g>
 <g class="line" style="animation-delay:0.60s"><text x="26" y="211" font-size="12" style="fill:#7ee787">Based</text><text x="99" y="211" font-size="12">Bangalore, India</text></g>
-<g class="line" style="animation-delay:0.75s"><text x="26" y="239" font-size="12" style="fill:#7ee787">Focus</text><text x="99" y="239" font-size="12">AI x Stuff</text></g>
+<g class="line" style="animation-delay:0.75s"><text x="26" y="239" font-size="12" style="fill:#7ee787">Focus</text><text x="99" y="239" font-size="12">AI memory / developer tools</text></g>
 <g class="line" style="animation-delay:0.90s"><text x="26" y="267" font-size="12" style="fill:#7ee787">Stack</text><text x="99" y="267" font-size="12">Python / Rust / Go / JavaScript</text></g>
-<g class="line" style="animation-delay:1.05s"><text x="26" y="295" font-size="12" style="fill:#7ee787">Build</text><text x="99" y="295" font-size="12">mnesio / Superuser</text></g>
+<g class="line" style="animation-delay:1.05s"><text x="26" y="295" font-size="12" style="fill:#7ee787">Build</text><text x="99" y="295" font-size="12">mnesio / ferro / Superuser</text></g>
 <g class="line" style="animation-delay:1.20s"><text x="26" y="323" font-size="12" style="fill:#7ee787">Craft</text><text x="99" y="323" font-size="12">Full-Stack / System Design / DSA</text></g>
 <g class="line" style="animation-delay:1.6s"><text x="26" y="376" font-size="12" style="fill:#7ee787">$</text><text x="42" y="376" font-size="12">building scalable systems</text><rect class="cursor" x="237" y="365" width="7" height="13" fill="#7ee787"/></g>
 <rect x="26" y="397" width="17" height="7" fill="#1b2530"/>

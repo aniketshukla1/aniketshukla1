@@ -5,10 +5,10 @@ Recreates the [terminal profile from Avi Vashishta's blog](https://www.avivashis
 ## What must work
 
 1. Real daily contribution counts render as a calendar with correct totals and streaks. Invalid or incomplete GitHub HTML fails before replacing saved data.
-2. A monochrome ASCII portrait prints once, alongside an info card revealing Aniket's existing profile details.
+2. A unified introduction card presents the animated ASCII portrait and Aniket's bio. Identity and projects precede contribution stats.
 3. All SVGs are self-contained, readable without animation, and honor reduced motion. The README provides descriptive image alternatives.
 4. GitHub Actions validates the generator and refreshes the graph daily without a personal access token or third-party stats service.
-5. mnesio and ferro have linked project cards with their official logos on the left and accurate descriptions on the right.
+5. mnesio and ferro have branded cards with direct documentation/demo links. Mobile variants use larger text, and selected merged Floci PRs provide concrete contribution highlights.
 
 ## Commands
 
@@ -46,3 +46,9 @@ Content stays in the existing profile repository, `aniketshukla1/aniketshukla1`.
 Edit the descriptions in `PROJECTS` in `scripts/make_projects.py`, then run the script. Each logo is embedded in the generated SVG, so the cards stay self-contained. Their reveal animation and `#static` reduced-motion view reuse the profile's terminal frame.
 
 The mnesio logo comes from [its brand avatar](https://github.com/aniketshukla1/mnesio/blob/main/website/public/brand/avatar-400.png); ferro uses [its desktop app icon](https://github.com/aniketshukla1/ferro/blob/main/apps/desktop/src-tauri/icons/128x128%402x.png). Descriptions follow the projects' current READMEs: [mnesio](https://github.com/mnesio/mnesio), [ferro](https://github.com/aniketshukla1/ferro).
+
+## Responsive presentation
+
+`whoami.svg` combines the portrait and bio into one lightweight terminal image. `whoami-mobile.svg`, `mnesio-mobile.svg`, and `ferro-mobile.svg` use layouts sized for narrow screens. The README's native `<picture>` sources choose those below 600 px, with a `#static` source first when reduced motion is enabled. No JavaScript or per-day image fragments are used. Original portrait/info-card assets remain available as generator outputs.
+
+The contribution highlights are curated public merged PRs, verified before publication. They are ordinary Markdown links so they remain readable and keyboard accessible at every screen size.

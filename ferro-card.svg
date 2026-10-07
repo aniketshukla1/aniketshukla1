@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="static" width="860" height="302" viewBox="0 0 860 302" role="img" aria-labelledby="title desc">
-<title id="title">~/projects/ferro</title><desc id="desc">ferro logo. See what your code changes before you push. Explore diffs, catch broken callers, and check tests and security in a private, local workspace. Rust core / Local-first / GitHub + GitLab</desc>
+<title id="title">~/projects/ferro</title><desc id="desc">ferro logo. Understand your code changes before you push. Review diffs, tests, and security on your own machine. Rust core / Local-first / GitHub + GitLab</desc>
 <style>
 text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }
 .line { animation: print .4s ease-out both; }
@@ -19,9 +19,8 @@ text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
 <path d="M230 68V256" stroke="#30363d"/>
 <text class="line" x="258" y="89" font-size="28" font-weight="600" style="fill:#7ee787;animation-delay:.2s">ferro</text>
 <text class="line" x="258" y="116" font-size="11" style="fill:#8b949e;animation-delay:.3s">LOCAL CODE REVIEW</text>
-<text class="line" x="258" y="156" font-size="15" style="animation-delay:0.40s">See what your code changes before you push.</text>
-<text class="line" x="258" y="181" font-size="15" style="animation-delay:0.52s">Explore diffs, catch broken callers, and check</text>
-<text class="line" x="258" y="206" font-size="15" style="animation-delay:0.64s">tests and security in a private, local workspace.</text>
+<text class="line" x="258" y="156" font-size="17" style="animation-delay:0.40s">Understand your code changes before you push.</text>
+<text class="line" x="258" y="184" font-size="17" style="animation-delay:0.52s">Review diffs, tests, and security on your own machine.</text>
 <text class="line" x="258" y="244" font-size="12" style="fill:#8b949e;animation-delay:.8s">Rust core / Local-first / GitHub + GitLab</text>
 <path d="M24 266H836" stroke="#30363d"/>
 <text x="24" y="287" font-size="11" style="fill:#8b949e">github.com/aniketshukla1/ferro</text>

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="static" width="860" height="302" viewBox="0 0 860 302" role="img" aria-labelledby="title desc">
-<title id="title">~/projects/mnesio</title><desc id="desc">mnesio logo. Long-term memory that helps AI agents learn from outcomes. Turns experience into better policies, with a safety gate before every improvement. Rust core / MCP server / Python + Node SDKs</desc>
+<title id="title">~/projects/mnesio</title><desc id="desc">mnesio logo. Memory that helps AI agents learn from outcomes. Improves agent policies through a safety gate. Rust core / MCP server / Python + Node SDKs</desc>
 <style>
 text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }
 .line { animation: print .4s ease-out both; }
@@ -19,9 +19,8 @@ text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
 <path d="M230 68V256" stroke="#30363d"/>
 <text class="line" x="258" y="89" font-size="28" font-weight="600" style="fill:#7ee787;animation-delay:.2s">mnesio</text>
 <text class="line" x="258" y="116" font-size="11" style="fill:#8b949e;animation-delay:.3s">AI AGENT MEMORY</text>
-<text class="line" x="258" y="156" font-size="15" style="animation-delay:0.40s">Long-term memory that helps AI agents learn</text>
-<text class="line" x="258" y="181" font-size="15" style="animation-delay:0.52s">from outcomes. Turns experience into better</text>
-<text class="line" x="258" y="206" font-size="15" style="animation-delay:0.64s">policies, with a safety gate before every improvement.</text>
+<text class="line" x="258" y="156" font-size="17" style="animation-delay:0.40s">Memory that helps AI agents learn from outcomes.</text>
+<text class="line" x="258" y="184" font-size="17" style="animation-delay:0.52s">Improves agent policies through a safety gate.</text>
 <text class="line" x="258" y="244" font-size="12" style="fill:#8b949e;animation-delay:.8s">Rust core / MCP server / Python + Node SDKs</text>
 <path d="M24 266H836" stroke="#30363d"/>
 <text x="24" y="287" font-size="11" style="fill:#8b949e">github.com/mnesio/mnesio</text>

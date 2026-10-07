@@ -55,6 +55,8 @@ def check():
         assert root.find("{http://www.w3.org/2000/svg}title") is not None
         assert root.find("{http://www.w3.org/2000/svg}desc") is not None
         assert "prefers-reduced-motion" in path.read_text()
+        ids = [node.attrib["id"] for node in root.iter() if "id" in node.attrib]
+        assert len(ids) == len(set(ids)), f"Duplicate SVG ids in {path.name}"
         for element in root.iter():
             assert element.tag.split("}")[-1] not in {"script", "foreignObject"}
             assert not any(key.split("}")[-1].startswith("on") for key in element.attrib)

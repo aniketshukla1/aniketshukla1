@@ -2,6 +2,7 @@
 from html import escape
 import os
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 STATIC = os.environ.get("STATIC") == "1"
@@ -9,9 +10,9 @@ ROWS = (
     ("Role", "Staff Software Engineer"),
     ("Now", "Synopsys Inc."),
     ("Based", "Bangalore, India"),
-    ("Focus", "AI x Stuff"),
+    ("Focus", "AI memory / developer tools"),
     ("Stack", "Python / Rust / Go / JavaScript"),
-    ("Build", "mnesio / Superuser"),
+    ("Build", "mnesio / ferro / Superuser"),
     ("Craft", "Full-Stack / System Design / DSA"),
 )
 
@@ -89,7 +90,56 @@ def info_card():
     return '\n'.join(svg) + '\n'
 
 
+def portrait_fragment(markup, x, y, width, height):
+    """Reuse the portrait's animated body inside the introduction card."""
+    ET.register_namespace("", "http://www.w3.org/2000/svg")
+    source = ET.fromstring(markup)
+    root = ET.Element("{http://www.w3.org/2000/svg}svg", {
+        "x": str(x), "y": str(y), "width": str(width), "height": str(height),
+        "viewBox": "0 44 370 350", "overflow": "hidden", "aria-hidden": "true"})
+    root.append(source.find("{http://www.w3.org/2000/svg}g"))
+    for element in root.iter():
+        if "id" in element.attrib:
+            element.set("id", "portrait-" + element.attrib["id"])
+    return ET.tostring(root, encoding="unicode")
+
+
+def introduction(markup, mobile=False):
+    description = "Aniket Shukla. " + ". ".join(f"{key}: {value}" for key, value in ROWS)
+    width, height = (430, 550) if mobile else (860, 420)
+    svg = [frame(width, "whoami / Aniket Shukla", description, height)]
+    if mobile:
+        svg.append(portrait_fragment(markup, 18, 62, 146, 150))
+        svg.append('<text class="line" x="184" y="93" font-size="25" font-weight="600" style="fill:#7ee787;animation-delay:.1s">Aniket Shukla</text>')
+        svg.append('<text class="line" x="184" y="123" font-size="14" style="fill:#8b949e;animation-delay:.2s">aniketshukla1@github</text>')
+        svg.append('<text class="line" x="184" y="161" font-size="16" style="animation-delay:.3s">AI memory +</text><text class="line" x="184" y="185" font-size="16" style="animation-delay:.4s">developer tools</text>')
+        svg.append('<path d="M24 230H406" stroke="#30363d"/>')
+        lines = (("Staff Software Engineer", 260, 20, "#c9d1d9"),
+                 ("Synopsys Inc. / Bangalore, India", 287, 16, "#8b949e"),
+                 ("BUILDING", 335, 13, "#7ee787"),
+                 ("mnesio / ferro / Superuser", 364, 18, "#c9d1d9"),
+                 ("STACK", 412, 13, "#7ee787"),
+                 ("Python / Rust / Go / JavaScript", 439, 16, "#c9d1d9"),
+                 ("Full-Stack / System Design / DSA", 505, 14, "#8b949e"))
+        for index, (text, y, size, color) in enumerate(lines):
+            svg.append(f'<text class="line" x="24" y="{y}" font-size="{size}" style="fill:{color};animation-delay:{.4 + index * .08:.2f}s">{escape(text)}</text>')
+    else:
+        svg.append(portrait_fragment(markup, 20, 67, 300, 303))
+        svg.append('<path d="M344 70V375" stroke="#30363d"/>')
+        svg.append('<text class="line" x="374" y="94" font-size="32" font-weight="600" style="fill:#7ee787;animation-delay:.1s">Aniket Shukla</text>')
+        svg.append('<text class="line" x="374" y="123" font-size="13" style="fill:#8b949e;animation-delay:.2s">aniketshukla1@github</text>')
+        for index, (key, value) in enumerate(ROWS):
+            y = 166 + index * 28
+            svg.append(f'<g class="line" style="animation-delay:{.3 + index * .12:.2f}s"><text x="374" y="{y}" font-size="13" style="fill:#7ee787">{escape(key)}</text><text x="454" y="{y}" font-size="13">{escape(value)}</text></g>')
+        svg.append('<text class="line" x="374" y="391" font-size="13" style="fill:#7ee787;animation-delay:1.3s">$ building useful things</text>')
+    svg.append('</svg>')
+    return '\n'.join(svg) + '\n'
+
+
 if __name__ == "__main__":
-    (ROOT / "aniket-ascii.svg").write_text(portrait(), encoding="utf-8")
+    markup = portrait()
+    (ROOT / "aniket-ascii.svg").write_text(markup, encoding="utf-8")
     (ROOT / "info-card.svg").write_text(info_card(), encoding="utf-8")
-    print("Saved aniket-ascii.svg and info-card.svg")
+    (ROOT / "whoami.svg").write_text(introduction(markup), encoding="utf-8")
+    (ROOT / "whoami-mobile.svg").write_text(introduction(markup, mobile=True), encoding="utf-8")
+    print("Saved portrait, info card, and responsive introduction cards")
