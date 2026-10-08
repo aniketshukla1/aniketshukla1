@@ -1,26 +1,54 @@
-# How this profile is made
+# Animated profile
 
-The header and project cards are flocks simulated on the GPU with [Murmuration](https://github.com/aniketshukla1/murmuration)'s engine: a few thousand birds write the name, then form each project's own logo in its colour. A falcon (a scripted pointer) crosses each one on a fixed loop, so the recordings repeat seamlessly.
+Recreates the [terminal profile from Avi Vashishta's blog](https://www.avivashishta.com/blog/build-animated-github-profile-readme) with Aniket's existing bio, projects, social links, and public avatar.
+
+## What must work
+
+1. Real daily contribution counts render as a calendar with correct totals and streaks. Invalid or incomplete GitHub HTML fails before replacing saved data.
+2. A unified introduction card presents the animated ASCII portrait and Aniket's bio. Identity and projects precede contribution stats.
+3. All SVGs are self-contained, readable without animation, and honor reduced motion. The README provides descriptive image alternatives.
+4. GitHub Actions validates the generator and refreshes the graph daily without a personal access token or third-party stats service.
+5. mnesio and ferro have branded cards with direct documentation/demo links. Mobile variants use larger text, and selected merged Floci PRs provide concrete contribution highlights.
+
+## Commands
+
+```sh
+python3 scripts/test_profile.py
+python3 scripts/update_contributions.py
+python3 scripts/make_profile.py
+python3 scripts/make_projects.py
+```
+
+The daily contribution generator uses Python 3.11+ and its standard library. The portrait generator requires Pillow locally (`python3 -m pip install -r scripts/requirements-portrait.txt`).
+
+To change profile details, edit `ROWS` in `scripts/make_profile.py` and run it again. The included background mask follows the current GitHub avatar. To change the photo, replace `data/avatar.png` with a transparent PNG; the generator uses its alpha channel automatically. `STATIC=1 python3 scripts/make_profile.py` generates a frozen portrait and card for local previews; run without `STATIC` again before committing.
+
+The README uses `<picture>` to select the same SVG's `#static` view when reduced motion is enabled. Its `:target` rules disable animations without duplicating images. This also covers browsers that do not pass the motion preference into embedded SVGs.
 
 ## Files
 
-- `art/*.webp`: the animated header and cards in `README.md`, each with a `-still.webp` first frame for visitors who prefer reduced motion.
-- `art/src/banner.html`, `art/src/card.html?p=superuser|mnesio|murmuration|ferro`: the pages that draw them. Open them through any local server to see them live.
-- `art/src/shapes.js`: turns a logo's pixels, or a word drawn on a canvas, into a shape the flock gathers into, and runs the falcon.
-- `art/src/flock.js`, `art/src/vendor/three.module.min.js`, `art/src/fonts/`: the engine, Three.js (MIT) and the fonts (SIL OFL), copied in so the art builds without anything else.
-- `data/mnesio-logo.png`, `data/ferro-logo.png`: the logos the cards sample.
-- `contrib-heatmap.svg`, `data/contributions.json`, `scripts/update_contributions.py`: the contribution calendar, refreshed daily.
+- `scripts/update_contributions.py`: fetch, validate, summarize, and render the rolling GitHub calendar.
+- `scripts/make_profile.py`: regenerate the portrait and info card from `data/avatar.png` and the details at the top of the script.
+- `scripts/make_projects.py`: regenerate the two project cards using Python's standard library and committed logos.
+- `data/contributions.json`: dated source data behind the graph, committed with the SVG.
+- `.github/workflows/update-profile-art.yml`: checks and daily refresh.
 
-## Re-render the art
+## Daily refresh
 
-After changing a card's name, kicker or logo (in `art/src/card.html`) or the header (in `art/src/banner.html`):
+The workflow runs around **11:47 IST** (06:17 UTC) and supports a manual run from the Actions tab. Only the graph and its data change daily; the portrait and card stay committed. GitHub supplies the workflow's built-in repository token for the commit, so no personal access token or secret needs to be added. Pull requests run checks with read permissions; only main-branch refreshes can write. An HTTP, parsing, or validation error fails the run and leaves the last good art in place.
 
-```sh
-art/src/make.sh
-```
+For a local `CERTIFICATE_VERIFY_FAILED` error, use Python with a configured trusted certificate store (the Codex bundled runtime was verified). Keep TLS verification enabled.
 
-It serves the repo, records each loop in headless Chrome on a virtual clock (`art/src/record.mjs`), and encodes the WebP files (`art/src/encode.py`). It needs Node 22+, Chrome, Chromium, Edge or Brave, and Python 3 with Pillow. The card descriptions, tags and links are plain text in `README.md`, so they reflow on phones; edit them there.
+Content stays in the existing profile repository, `aniketshukla1/aniketshukla1`. Never publish invented achievements, private repository details, credentials, or the blog URL's access token.
 
-## Daily contribution refresh
+## Project cards
 
-`.github/workflows/update-profile-art.yml` runs around **11:47 IST** (06:17 UTC) and can be run by hand from the Actions tab. It checks the calendar logic (`python3 scripts/test_profile.py`), fetches the public calendar, and commits `contrib-heatmap.svg` and `data/contributions.json` when they change. It uses the workflow's built-in token; no secret is needed. An HTTP, parsing or validation error fails the run and leaves the last good graph in place.
+Edit the descriptions in `PROJECTS` in `scripts/make_projects.py`, then run the script. Each logo is embedded in the generated SVG, so the cards stay self-contained. Their reveal animation and `#static` reduced-motion view reuse the profile's terminal frame.
+
+The mnesio logo comes from [its brand avatar](https://github.com/aniketshukla1/mnesio/blob/main/website/public/brand/avatar-400.png); ferro uses [its desktop app icon](https://github.com/aniketshukla1/ferro/blob/main/apps/desktop/src-tauri/icons/128x128%402x.png). Descriptions follow the projects' current READMEs: [mnesio](https://github.com/mnesio/mnesio), [ferro](https://github.com/aniketshukla1/ferro).
+
+## Responsive presentation
+
+`whoami.svg` combines the portrait and bio into one lightweight terminal image. `whoami-mobile.svg`, `mnesio-mobile.svg`, and `ferro-mobile.svg` use layouts sized for narrow screens. The README's native `<picture>` sources choose those below 600 px, with a `#static` source first when reduced motion is enabled. No JavaScript or per-day image fragments are used. Original portrait/info-card assets remain available as generator outputs.
+
+The contribution highlights are curated public merged PRs, verified before publication. They are ordinary Markdown links so they remain readable and keyboard accessible at every screen size.
