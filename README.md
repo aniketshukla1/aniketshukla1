@@ -1,75 +1,78 @@
 <div align="center">
 
-<h3><code>aniket@github ~ $ whoami</code></h3>
-
-<p><strong>Building memory for AI agents and tools for developers.</strong></p>
-
 <picture>
-  <source media="(max-width: 600px) and (prefers-reduced-motion: reduce)" srcset="./whoami-mobile.svg#static" />
-  <source media="(max-width: 600px)" srcset="./whoami-mobile.svg" />
-  <source media="(prefers-reduced-motion: reduce)" srcset="./whoami.svg#static" />
-  <img src="./whoami.svg" width="860" alt="Aniket Shukla · Staff Software Engineer at Synopsys Inc. · Bangalore · AI memory and developer tools · Building mnesio, ferro, and Superuser · Python, Rust, Go, JavaScript · Full-Stack Development, System Design, DSA" />
+  <source media="(prefers-reduced-motion: reduce)" srcset="./art/banner-still.webp" />
+  <img src="./art/banner.webp" width="860" alt="Aniket Shukla, written by a flock of birds against a night sky; a falcon cuts through the letters and the flock closes again. Staff Software Engineer, Synopsys, Bangalore." />
 </picture>
 
-<p><a href="https://github.com/mnesio/mnesio">mnesio</a> · <a href="https://github.com/aniketshukla1/ferro">ferro</a> · <a href="https://linkedin.com/in/aniketshukla1">LinkedIn</a></p>
+### I build AI tools you can trust.
+
+They run on your machine, ask before they act, and prove what they did.
+
+<a href="https://linkedin.com/in/aniketshukla1">LinkedIn</a> · <a href="https://x.com/aniket_shukla_">X</a> · <a href="https://instagram.com/itsaniketshuklaa">Instagram</a>
 
 <br />
 
-<h3><code>aniket@github ~ $ ls ~/projects</code></h3>
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./art/superuser-still.webp" />
+  <img src="./art/superuser.webp" width="860" alt="Superuser, coming soon: a coworker that lives on your computer. A flock forms its # prompt and cursor." />
+</picture>
 
-<a href="https://github.com/mnesio/mnesio">
-  <picture>
-    <source media="(max-width: 600px) and (prefers-reduced-motion: reduce)" srcset="./mnesio-mobile.svg#static" />
-    <source media="(max-width: 600px)" srcset="./mnesio-mobile.svg" />
-    <source media="(prefers-reduced-motion: reduce)" srcset="./mnesio-card.svg#static" />
-    <img src="./mnesio-card.svg" width="860" alt="mnesio: memory that helps AI agents learn from outcomes and improve their policies through a safety gate. Rust core, MCP server, Python and Node SDKs." />
-  </picture>
-</a>
-
-<p><a href="https://github.com/mnesio/mnesio"><strong>Repository ↗</strong></a> · <a href="https://mnesio.github.io/mnesio/"><strong>Documentation ↗</strong></a> · <a href="https://mnesio.github.io/mnesio/start/getting-started/">Get started</a></p>
+The AI you can tell everything. It runs on your machine, asks before it acts, and shows you everything that left.<br />
+<code>macOS</code> · <code>no account</code> · <code>no telemetry</code> · <code>runs with the Wi-Fi off</code><br />
+<sub>Coming soon.</sub>
 
 <br />
 
-<a href="https://github.com/aniketshukla1/ferro">
-  <picture>
-    <source media="(max-width: 600px) and (prefers-reduced-motion: reduce)" srcset="./ferro-mobile.svg#static" />
-    <source media="(max-width: 600px)" srcset="./ferro-mobile.svg" />
-    <source media="(prefers-reduced-motion: reduce)" srcset="./ferro-card.svg#static" />
-    <img src="./ferro-card.svg" width="860" alt="ferro: understand code changes before you push. Review diffs, tests, and security on your own machine. Rust core, local code review, GitHub and GitLab support." />
-  </picture>
-</a>
+<a href="https://github.com/mnesio/mnesio"><picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./art/mnesio-still.webp" />
+  <img src="./art/mnesio.webp" width="860" alt="mnesio, memory for AI agents. A flock forms its node-graph logo." />
+</picture></a>
 
-<p><a href="https://github.com/aniketshukla1/ferro"><strong>Repository ↗</strong></a> · <a href="https://aniketshukla1.github.io/ferro/"><strong>Try the live demo ↗</strong></a> · <a href="https://github.com/aniketshukla1/ferro#-quickstart">Quickstart</a></p>
+Memory that helps AI agents learn from outcomes, and improves their policies through a safety gate.<br />
+<code>Rust core</code> · <code>MCP server</code> · <code>Python + Node SDKs</code><br />
+<a href="https://github.com/mnesio/mnesio"><strong>Repository ↗</strong></a> · <a href="https://mnesio.github.io/mnesio/"><strong>Documentation ↗</strong></a> · <a href="https://mnesio.github.io/mnesio/start/getting-started/">Get started</a>
 
 <br />
 
-<h3><code>aniket@github ~ $ git log --oneline</code></h3>
+<a href="https://github.com/aniketshukla1/murmuration"><picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./art/murmuration-still.webp" />
+  <img src="./art/murmuration.webp" width="860" alt="Murmuration, an open agent skill. A flock forms its serif M." />
+</picture></a>
 
-<p>Selected merged contributions to <a href="https://github.com/floci-io/floci">Floci</a>.</p>
-
-<div align="left">
-
-- <code>EC2</code> Use regional private DNS names. <a href="https://github.com/floci-io/floci/pull/5033">Merged #5033 ↗</a>
-- <code>CloudFormation</code> Apply stack tags during updates. <a href="https://github.com/floci-io/floci/pull/5031">Merged #5031 ↗</a>
-- <code>API Gateway</code> Preserve and update method response parameters. <a href="https://github.com/floci-io/floci/pull/5030">Merged #5030 ↗</a>
-
-</div>
+Websites that move like what they're about. It finds your subject's verb and builds the site with real 3D made in code.<br />
+<code>any agent</code> · <code>HTML, CSS and JS</code> · <code>no build step</code><br />
+<a href="https://github.com/aniketshukla1/murmuration"><strong>Repository ↗</strong></a> · <a href="https://aniketshukla1.github.io/murmuration/"><strong>Website ↗</strong></a> · <code>npx skills add aniketshukla1/murmuration</code>
 
 <br />
 
-<h3><code>aniket@github ~ $ ./contributions.sh</code></h3>
+<a href="https://github.com/aniketshukla1/ferro"><picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./art/ferro-still.webp" />
+  <img src="./art/ferro.webp" width="860" alt="ferro, local code review. A flock forms its F logo." />
+</picture></a>
+
+Understand your code changes before you push. Diffs, tests and security, reviewed on your own machine.<br />
+<code>Rust core</code> · <code>GitHub + GitLab</code> · <code>runs locally</code><br />
+<a href="https://github.com/aniketshukla1/ferro"><strong>Repository ↗</strong></a> · <a href="https://aniketshukla1.github.io/ferro/"><strong>Try the live demo ↗</strong></a> · <a href="https://github.com/aniketshukla1/ferro#-quickstart">Quickstart</a>
+
+<br />
+
+#### Also building
+
+<a href="https://github.com/aniketshukla1/agent-cli"><strong>agent-cli</strong></a>, a fast AI agent for your terminal, in Rust, with MCP and skills · <a href="https://github.com/aniketshukla1/sdlc-workflow"><strong>sdlc-workflow</strong></a>, paste a Jira key and get a merged MR
+
+#### Merged upstream
+
+Into <a href="https://github.com/floci-io/floci">Floci</a>, the free local AWS emulator:<br />
+<code>EC2</code> regional private DNS names (<a href="https://github.com/floci-io/floci/pull/5033">#5033</a>) · <code>CloudFormation</code> stack tags on updates (<a href="https://github.com/floci-io/floci/pull/5031">#5031</a>) · <code>API Gateway</code> method response parameters (<a href="https://github.com/floci-io/floci/pull/5030">#5030</a>)
+
+<br />
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./contrib-heatmap.svg#static" />
-  <img src="./contrib-heatmap.svg" width="860" alt="Aniket's contribution calendar for the last twelve months, with contribution totals and current and longest streaks" />
+  <img src="./contrib-heatmap.svg" width="860" alt="Aniket's contribution calendar for the last twelve months, with totals and current and longest streaks." />
 </picture>
 
-<br />
-
-<h3><code>aniket@github ~ $ ./links.sh</code></h3>
-
-<p><a href="https://linkedin.com/in/aniketshukla1">LinkedIn</a> · <a href="https://github.com/aniketshukla1?tab=repositories">All projects</a> · <a href="https://x.com/aniket_shukla_">X</a> · <a href="https://instagram.com/itsaniketshuklaa">Instagram</a></p>
-
-<p><sub>Staff Software Engineer · AI Memory · Developer Tools · Scalable Systems</sub></p>
+<sub>Every animation on this page is a flock simulated on the GPU, made with <a href="https://github.com/aniketshukla1/murmuration">Murmuration</a>.</sub>
 
 </div>
