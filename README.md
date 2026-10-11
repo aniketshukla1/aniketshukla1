@@ -8,7 +8,7 @@
   <source media="(max-width: 600px) and (prefers-reduced-motion: reduce)" srcset="./whoami-mobile.svg#static" />
   <source media="(max-width: 600px)" srcset="./whoami-mobile.svg" />
   <source media="(prefers-reduced-motion: reduce)" srcset="./whoami.svg#static" />
-  <img src="./whoami.svg" width="860" alt="Aniket Shukla · Staff Software Engineer at Synopsys Inc. · Bangalore · AI memory and developer tools · Building mnesio, ferro, and Superuser · Python, Rust, Go, JavaScript · Full-Stack Development, System Design, DSA" />
+  <img src="./whoami.svg" width="860" alt="Aniket Shukla · Staff Software Engineer at Synopsys Inc. · Bangalore · Building mnesio, ferro, and Superuser · Python, Rust, Go, JavaScript · Full-Stack Development, System Design, DSA" />
 </picture>
 
 <p><a href="https://github.com/mnesio/mnesio">mnesio</a> · <a href="https://github.com/aniketshukla1/ferro">ferro</a> · <a href="https://linkedin.com/in/aniketshukla1">LinkedIn</a></p>
