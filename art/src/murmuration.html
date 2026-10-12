@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Murmuration</title>
+<!-- The Murmuration card, in Murmuration's own brand (a sunset, ink, a serif): the flock forms the
+     serif M that is its logo, turning in 3D, and a falcon cuts through it every eight seconds.
+     Recorded by art/src/make.sh. -->
+<style>
+  @font-face { font-family: "Fraunces"; src: url(fonts/fraunces-normal.woff2) format("woff2"); font-weight: 300 600; font-display: block; }
+  @font-face { font-family: "Fraunces"; src: url(fonts/fraunces-italic.woff2) format("woff2"); font-weight: 300 600; font-style: italic; font-display: block; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 400 500; font-display: block; }
+  :root { --flock-ink: #17151c; --flock-size: 0.24; color: #17151c; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  .sky { position: fixed; inset: 0; border-radius: 3.8vh; overflow: hidden;
+    background: radial-gradient(38% 70% at 22% 62%, rgba(255, 244, 222, 0.9), rgba(255, 233, 196, 0) 70%),
+      linear-gradient(180deg, #a294ad 0%, #c49ba3 30%, #e2ad93 58%, #f0c99c 82%, #f5ddb7 100%); }
+  canvas.flock { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .text { position: absolute; left: 47%; right: 5%; top: 50%; transform: translateY(-50%); }
+  .kicker { margin: 0 0 2.6vh; font: 500 3vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(23, 21, 28, 0.72); }
+  .name { margin: 0; font: 340 17vh/0.92 "Fraunces", Georgia, serif; font-variation-settings: "opsz" 144; letter-spacing: -0.035em; }
+  .line { margin: 3vh 0 0; font: 400 italic 4.4vh/1.25 "Fraunces", Georgia, serif; color: #7a2e14; }
+  .pill { position: absolute; top: 8%; right: 4.5%; margin: 0; padding: 1.3vh 2.4vh; border-radius: 999px; font: 500 2.6vh/1 "Geist Mono", ui-monospace, monospace; color: #f3eee4; background: #17151c; }
+</style>
+</head>
+<body>
+<div class="sky"></div>
+<section data-flock="mark" data-flock-anchor=".stage"><div class="stage"></div></section>
+<p class="pill">Open source</p>
+<div class="text">
+  <p class="kicker">An open agent skill</p>
+  <h1 class="name">Murmuration</h1>
+  <p class="line">Websites that move like what they're about.</p>
+</div>
+<script type="module">
+  import { placeAnchor, falcon } from './shapes.js';
+  placeAnchor(document.querySelector('.stage'), innerWidth * 0.22, innerHeight * 0.52, innerHeight * 0.36);
+  await import('./flock.js');
+  falcon({ loop: 8000, at: 4600, pass: 1100, from: [-0.05, 0.64], to: [0.44, 0.38] });
+</script>
+</body>
+</html>

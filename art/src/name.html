@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aniket Shukla</title>
+<!-- The profile header. A beam of light rises and builds the name block by block: each block lands
+     hot and cools to matte ceramic while a studio camera orbits. Then the beam comes back down and
+     un-builds it. A nine-second loop, recorded for README.md by art/src/make.sh. -->
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<style>
+  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 300 600; font-display: block; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 400 500; font-display: block; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  .studio {
+    position: fixed; inset: 0; border-radius: 3.4vh; overflow: hidden;
+    background:
+      radial-gradient(55% 45% at 50% 108%, rgba(255, 138, 61, 0.16), transparent 70%),
+      radial-gradient(85% 95% at 50% 18%, #2c2f39 0%, #17191f 55%, #0b0c10 100%);
+  }
+  .studio canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .role { position: absolute; z-index: 2; left: 0; right: 0; top: 7.5%; margin: 0; text-align: center; font: 500 2.2vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(236, 232, 224, 0.5); }
+</style>
+</head>
+<body>
+<div class="studio"></div>
+<p class="role">Staff Software Engineer · Synopsys · Bangalore</p>
+<script type="module">
+  import * as THREE from 'three';
+  import { RoomEnvironment } from './vendor/RoomEnvironment.js';
+
+  const LOOP = 9;                  // seconds; everything below repeats exactly
+  const BUILD = [0.25, 3.7];       // the beam rises and lays the blocks
+  const UNBUILD = [7.0, 8.75];     // the beam comes back down and lifts them away
+  const GLOW = new THREE.Color(1.0, 0.22, 0.025);
+
+  // The name as a grid of cells: draw it, keep one cell every CELL pixels where the letters are.
+  await document.fonts.load('600 200px Geist');
+  const CELL = 8, cw = 1260, ch = 470;
+  const canvas2d = Object.assign(document.createElement('canvas'), { width: cw, height: ch });
+  const g = canvas2d.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#fff';
+  g.font = '600 200px Geist';
+  g.letterSpacing = '14px';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText('ANIKET', cw / 2, ch * 0.27);
+  g.fillText('SHUKLA', cw / 2, ch * 0.73);
+  const px = g.getImageData(0, 0, cw, ch).data;
+  const cells = [];
+  for (let y = CELL / 2; y < ch; y += CELL) {
+    for (let x = CELL / 2; x < cw; x += CELL) {
+      if (px[(Math.floor(y) * cw + Math.floor(x)) * 4 + 3] > 128) cells.push([x / CELL - cw / CELL / 2, ch / CELL / 2 - y / CELL]);
+    }
+  }
+  const ys = cells.map((c) => c[1]);
+  const yMin = Math.min(...ys), yMax = Math.max(...ys);
+  const DEPTH = [-1.5, -0.5, 0.5, 1.5];
+  const N = cells.length * DEPTH.length;
+
+  // Renderer, studio light and shadows.
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.querySelector('.studio').append(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.background = (() => {
+    const b = Object.assign(document.createElement('canvas'), { width: 512, height: 256 });
+    const bg = b.getContext('2d');
+    let grad = bg.createRadialGradient(256, 46, 0, 256, 46, 330);
+    grad.addColorStop(0, '#2c2f39'); grad.addColorStop(0.55, '#17191f'); grad.addColorStop(1, '#0b0c10');
+    bg.fillStyle = grad; bg.fillRect(0, 0, 512, 256);
+    grad = bg.createRadialGradient(256, 290, 0, 256, 290, 200);
+    grad.addColorStop(0, 'rgba(255,138,61,0.16)'); grad.addColorStop(1, 'rgba(255,138,61,0)');
+    bg.fillStyle = grad; bg.fillRect(0, 0, 512, 256);
+    const tex = new THREE.CanvasTexture(b);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  })();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.28;
+
+  const key = new THREE.DirectionalLight(0xfff1e2, 3.4);
+  key.position.set(-70, 110, 70);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -95, right: 95, top: 60, bottom: -60, near: 1, far: 400 });
+  key.shadow.bias = -0.0004;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffb27a, 2.2);
+  rim.position.set(80, 40, -100);
+  const fill = new THREE.DirectionalLight(0x9fb4ff, 0.45);
+  fill.position.set(90, 10, 120);
+  scene.add(rim, fill);
+  const beamLight = new THREE.PointLight(0xff8a3d, 0, 90, 1.6);
+  scene.add(beamLight);
+
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(600, 300), new THREE.ShadowMaterial({ opacity: 0.38 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = yMin - 1.6;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // The blocks: one instanced box each, with a per-block heat that glows as it lands and cools.
+  const geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+  const heat = new Float32Array(N);
+  geometry.setAttribute('aHeat', new THREE.InstancedBufferAttribute(heat, 1));
+  const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.42, metalness: 0.04 });
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uGlow = { value: GLOW };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float aHeat;\nvarying float vHeat;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvHeat = aHeat;');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uGlow;\nvarying float vHeat;')
+      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= 1.0 - 0.97 * clamp(vHeat, 0.0, 1.0);')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += uGlow * vHeat * 2.8;');
+  };
+  const blocks = new THREE.InstancedMesh(geometry, material, N);
+  blocks.castShadow = true;
+  blocks.receiveShadow = true;
+  scene.add(blocks);
+  const mirrorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6, metalness: 0, transparent: true, opacity: 0.13, depthWrite: false });
+  mirrorMat.onBeforeCompile = material.onBeforeCompile;
+  const mirror = new THREE.InstancedMesh(geometry, mirrorMat, N);
+  scene.add(mirror);
+
+  const born = new Float32Array(N), gone = new Float32Array(N), home = [];
+  const tint = new THREE.Color();
+  let i = 0;
+  for (const [x, y] of cells) {
+    for (const z of DEPTH) {
+      const h = (y - yMin) / (yMax - yMin);
+      const jitter = (Math.sin(x * 12.9898 + z * 78.233) * 43758.5453) % 1;
+      born[i] = BUILD[0] + h * (BUILD[1] - BUILD[0] - 0.45) + Math.abs(jitter) * 0.18 + (z + 1) * 0.03;
+      gone[i] = UNBUILD[0] + (1 - h) * (UNBUILD[1] - UNBUILD[0] - 0.4) + Math.abs(jitter) * 0.15;
+      home.push(new THREE.Vector3(x, y, z));
+      tint.setRGB(0.9 + Math.abs(jitter) * 0.05, 0.875 + Math.abs(jitter) * 0.04, 0.84 + Math.abs(jitter) * 0.03);
+      blocks.setColorAt(i, tint);
+      i += 1;
+    }
+  }
+
+  // The beam: a thin hot line with a soft band of light, at the height being built.
+  const bandTex = (() => {
+    const t = Object.assign(document.createElement('canvas'), { width: 4, height: 128 });
+    const tg = t.getContext('2d');
+    const grad = tg.createLinearGradient(0, 0, 0, 128);
+    grad.addColorStop(0, 'rgba(255,138,61,0)');
+    grad.addColorStop(0.5, 'rgba(255,170,110,1)');
+    grad.addColorStop(1, 'rgba(255,138,61,0)');
+    tg.fillStyle = grad;
+    tg.fillRect(0, 0, 4, 128);
+    return new THREE.CanvasTexture(t);
+  })();
+  const band = new THREE.Mesh(new THREE.PlaneGeometry(150, 3.2), new THREE.MeshBasicMaterial({ map: bandTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  const line = new THREE.Mesh(new THREE.BoxGeometry(146, 0.07, 5.2), new THREE.MeshBasicMaterial({ color: 0xffd2a8, toneMapped: false }));
+  scene.add(band, line);
+
+  const SPARKS = 420;
+  const sparkPos = new Float32Array(SPARKS * 3), sparkSeed = Array.from({ length: SPARKS }, (_, j) => {
+    const r = (n) => Math.abs(Math.sin(j * 91.7 + n * 47.3) * 43758.5453) % 1;
+    return { t0: r(1), x: (r(2) - 0.5) * 128, vx: (r(3) - 0.5) * 14, vy: 6 + r(4) * 14, vz: 4 + r(5) * 10, life: 0.35 + r(6) * 0.45 };
+  });
+  const sparkGeo = new THREE.BufferGeometry();
+  sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+  const sparks = new THREE.Points(sparkGeo, new THREE.PointsMaterial({ color: 0xffa060, size: 0.9, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  scene.add(sparks);
+
+  const camera = new THREE.PerspectiveCamera(28, innerWidth / innerHeight, 1, 2000);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3();
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+  function frame(now) {
+    const t = (now / 1000) % LOOP;
+    for (let k = 0; k < N; k++) {
+      const a = clamp01((t - born[k]) / 0.24);
+      const v = clamp01((t - gone[k]) / 0.3);
+      const sc = ease(a) * (1 - ease(v));
+      p.copy(home[k]);
+      p.y += (1 - ease(a)) * 1.6 + ease(v) * 1.2;
+      s.setScalar(Math.max(sc, 0.0001));
+      blocks.setMatrixAt(k, m.compose(p, q, s));
+      p.y = 2 * floor.position.y - p.y;
+      mirror.setMatrixAt(k, m.compose(p, q, s));
+      heat[k] = (t >= born[k] ? Math.exp(-(t - born[k]) / 1.05) : 0) + (v > 0 ? Math.sin(v * Math.PI) * 1.1 : 0);
+    }
+    blocks.instanceMatrix.needsUpdate = true;
+    mirror.instanceMatrix.needsUpdate = true;
+    geometry.attributes.aHeat.needsUpdate = true;
+
+    // Where the beam is: rising with the build, falling with the un-build, gone in between.
+    let beamH = -1, beamOn = 0;
+    if (t >= BUILD[0] && t <= BUILD[1]) { beamH = (t - BUILD[0]) / (BUILD[1] - BUILD[0] - 0.45); beamOn = Math.min(1, (BUILD[1] - t) / 0.35, (t - BUILD[0]) / 0.2); }
+    if (t >= UNBUILD[0] && t <= UNBUILD[1]) { beamH = 1 - (t - UNBUILD[0]) / (UNBUILD[1] - UNBUILD[0] - 0.4); beamOn = Math.min(1, (UNBUILD[1] - t) / 0.35, (t - UNBUILD[0]) / 0.2); }
+    beamOn = clamp01(beamOn);
+    const by = yMin - 0.8 + clamp01(beamH) * (yMax - yMin + 1.6);
+    band.position.set(0, by, 2.4);
+    line.position.set(0, by, 0);
+    band.material.opacity = beamOn * 0.9;
+    line.material.opacity = beamOn;
+    line.material.transparent = true;
+    line.visible = band.visible = beamOn > 0.01;
+    beamLight.position.set(0, by + 2, 16);
+    for (let j = 0; j < SPARKS; j++) {
+      const sp = sparkSeed[j];
+      // Each spark is emitted once per active beam window, at its own moment, from the beam line.
+      const win = t < 5 ? BUILD : UNBUILD;
+      const te = win[0] + sp.t0 * (win[1] - win[0] - 0.4);
+      const age = t - te;
+      const on = beamOn > 0.05 && age >= 0 && age <= sp.life;
+      const hE = t < 5 ? (te - BUILD[0]) / (BUILD[1] - BUILD[0] - 0.45) : 1 - (te - UNBUILD[0]) / (UNBUILD[1] - UNBUILD[0] - 0.4);
+      const y0 = yMin - 0.8 + clamp01(hE) * (yMax - yMin + 1.6);
+      sparkPos[j * 3] = on ? sp.x + sp.vx * age : 0;
+      sparkPos[j * 3 + 1] = on ? y0 + sp.vy * age - 26 * age * age : -999;
+      sparkPos[j * 3 + 2] = on ? 2.5 + sp.vz * age : 0;
+    }
+    sparkGeo.attributes.position.needsUpdate = true;
+    beamLight.intensity = beamOn * 1800;
+
+    // A slow studio orbit that comes back to where it started.
+    const phase = (t / LOOP) * Math.PI * 2;
+    const yaw = Math.sin(phase) * 0.42, D = 172;
+    camera.position.set(Math.sin(yaw) * D, 24 + Math.sin(phase + 1.2) * 6, Math.cos(yaw) * D);
+    camera.lookAt(0, -2, 0);
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

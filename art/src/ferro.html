@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ferro</title>
+<!-- The ferro card, in ferro's own brand (the orange-to-crimson F). Ferro means iron: the F is forged
+     in dark iron with heat running through it, embers rising, and a code review scrolling behind it.
+     An eight-second loop, recorded by art/src/make.sh. -->
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<style>
+  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 300 600; font-display: block; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 400 500; font-display: block; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  .card { position: fixed; inset: 0; border-radius: 3.8vh; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07); }
+  .card canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .text { position: absolute; left: 50%; right: 5%; top: 50%; transform: translateY(-50%); color: #fff3ea; }
+  .kicker { margin: 0 0 3vh; font: 500 3.2vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.22em; text-transform: uppercase; color: #ff8a4c; }
+  .name { margin: 0; font: 600 20vh/0.88 "Geist", system-ui, sans-serif; letter-spacing: -0.06em;
+    background: linear-gradient(100deg, #ffb070 0%, #f2643a 55%, #c8314a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .line { margin: 3.4vh 0 0; font: 400 3.4vh/1.4 "Geist", system-ui, sans-serif; color: rgba(255, 243, 234, 0.72); max-width: 26em; }
+  .pill { position: absolute; top: 8%; right: 4.5%; margin: 0; padding: 1.3vh 2.4vh; border-radius: 999px; font: 500 2.6vh/1 "Geist Mono", ui-monospace, monospace; color: #1a0907; background: linear-gradient(100deg, #ff9a50, #e0533a); }
+</style>
+</head>
+<body>
+<div class="card">
+  <p class="pill">Open source</p>
+  <div class="text">
+    <p class="kicker">Local code review</p>
+    <h1 class="name">ferro</h1>
+    <p class="line">Know what your change does before you push it.</p>
+  </div>
+</div>
+<script type="module">
+  import * as THREE from 'three';
+  import { RoomEnvironment } from './vendor/RoomEnvironment.js';
+
+  const LOOP = 8;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  document.querySelector('.card').prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.7;
+  const tex = (w, h, paint) => { const c = Object.assign(document.createElement('canvas'), { width: w, height: h }); paint(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
+  scene.background = tex(512, 180, (g, w, h) => {
+    let grad = g.createRadialGradient(w * 0.25, h * 0.55, 0, w * 0.25, h * 0.55, w * 0.42);
+    grad.addColorStop(0, '#3a1610'); grad.addColorStop(0.5, '#1d0d0b'); grad.addColorStop(1, '#0c0807');
+    g.fillStyle = grad; g.fillRect(0, 0, w, h);
+  });
+
+  // A code review scrolling behind the F.
+  const diff = [
+    ['+', 'fn review(diff: &Diff) -> Report {'], [' ', '    let risks = scan(&diff.hunks);'], ['-', '    let ok = run_tests().unwrap();'],
+    ['+', '    let ok = run_tests()?;'], [' ', '    if risks.secrets > 0 {'], ['+', '        return Report::block("secret in diff");'],
+    [' ', '    }'], ['-', '    push(diff);'], ['+', '    Report::ready(ok, risks)'], [' ', '}'], ['+', '// reviewed on this machine'],
+    [' ', 'impl Report {'], ['-', '    fn skip_checks() {}'], ['+', '    fn explain(&self) -> Summary {'], [' ', '        summarize(&self.findings)'], [' ', '    }'],
+  ];
+  const codeTex = tex(1024, 1024, (g, w, h) => {
+    g.font = '22px "Geist Mono", monospace';
+    for (let r = 0; r < 32; r++) {
+      const [m, text] = diff[r % diff.length];
+      g.fillStyle = m === '+' ? 'rgba(110, 231, 168, 0.85)' : m === '-' ? 'rgba(255, 110, 110, 0.85)' : 'rgba(255, 240, 230, 0.45)';
+      g.fillText(`${m} ${text}`, 24, 34 + r * 32);
+    }
+  });
+  codeTex.wrapT = THREE.RepeatWrapping;
+  // Fade the code toward its edges so it sits behind the F like a haze.
+  const fade = tex(256, 256, (g, w, h) => { const grad = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); grad.addColorStop(0, '#fff'); grad.addColorStop(0.55, '#888'); grad.addColorStop(1, '#000'); g.fillStyle = grad; g.fillRect(0, 0, w, h); });
+  const code = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), new THREE.MeshBasicMaterial({ map: codeTex, alphaMap: fade, transparent: true, opacity: 0.16, depthWrite: false }));
+  code.position.set(-5.6, 0, -9);
+  scene.add(code);
+
+  // The F, as in the logo: a heavy geometric capital, extruded and bevelled.
+  const s = new THREE.Shape();
+  [[0, 0], [1.2, 0], [1.2, 2.05], [2.8, 2.05], [2.8, 3.15], [1.2, 3.15], [1.2, 3.9], [3.35, 3.9], [3.35, 5], [0, 5]].forEach(([x, y], i) => (i ? s.lineTo(x, y) : s.moveTo(x, y)));
+  const geo = new THREE.ExtrudeGeometry(s, { depth: 1.15, bevelEnabled: true, bevelThickness: 0.14, bevelSize: 0.1, bevelSegments: 5, curveSegments: 4 });
+  geo.center();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x3b3534, metalness: 0.85, roughness: 0.34 });
+  const uniforms = { uTime: { value: 0 } };
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.uTime = uniforms.uTime;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vLocal;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvLocal = position;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform float uTime;\nvarying vec3 vLocal;')
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        // Heat rises through the iron: hottest at the foot, in slow bands that climb.
+        float foot = smoothstep(-0.4, -2.7, vLocal.y);
+        float band = 0.5 + 0.5 * sin(vLocal.y * 3.1 - uTime * 2.0 + sin(vLocal.x * 2.3 + uTime) * 1.4); // uTime is the loop's phase, so this repeats exactly
+        float vein = pow(band, 7.0) * smoothstep(1.8, -1.2, vLocal.y) * 0.75;
+        float heat = clamp(foot * (0.7 + 0.5 * band) + vein, 0.0, 1.0);
+        totalEmissiveRadiance += mix(vec3(0.9, 0.12, 0.02), vec3(1.0, 0.55, 0.16), heat) * heat * 1.9;`);
+  };
+  const F = new THREE.Mesh(geo, mat);
+  const forge = new THREE.Group();
+  forge.add(F);
+  forge.position.set(-5.2, -0.1, 0);
+  forge.scale.setScalar(1.28);
+  scene.add(forge);
+  const key = new THREE.DirectionalLight(0xfff0e6, 3.0);
+  key.position.set(-6, 8, 9);
+  const ember = new THREE.PointLight(0xff6a2a, 60, 14, 1.6);
+  ember.position.set(-5.4, -3.2, 2.5);
+  scene.add(key, ember);
+
+  // Embers rising off the foot of the F; stateless, so the loop repeats exactly.
+  const EMBERS = 160, emberPos = new Float32Array(EMBERS * 3);
+  const seeds = Array.from({ length: EMBERS }, (_, j) => { const r = (n) => Math.abs(Math.sin(j * 37.1 + n * 91.7) * 43758.5453) % 1; return { t0: r(1) * LOOP, x: (r(2) - 0.5) * 3.6, z: (r(3) - 0.5) * 1.6, sp: 1.1 + r(4) * 1.6, sway: r(5) * 6.28, life: 1.6 + r(6) * 1.6 }; });
+  const emberGeo = new THREE.BufferGeometry();
+  emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPos, 3));
+  const embers = new THREE.Points(emberGeo, new THREE.PointsMaterial({ color: 0xff9a50, size: 0.09, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  forge.add(embers);
+
+  const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.1, 200);
+  camera.position.set(0, 0.8, 20);
+  camera.lookAt(0, 0, 0);
+  function frame(now) {
+    const t = (now / 1000) % LOOP;
+    const ph = (t / LOOP) * Math.PI * 2;
+    uniforms.uTime.value = ph;
+    forge.rotation.y = Math.sin(ph) * 0.38 + 0.18;
+    forge.rotation.x = Math.sin(ph + 1) * 0.05;
+    codeTex.offset.y = (t / LOOP);
+    for (let j = 0; j < EMBERS; j++) {
+      const e = seeds[j];
+      const age = ((t - e.t0) % LOOP + LOOP) % LOOP;
+      const on = age < e.life;
+      emberPos[j * 3] = on ? e.x + Math.sin(e.sway + age * 2) * 0.25 : 0;
+      emberPos[j * 3 + 1] = on ? -2.7 + age * e.sp : -99;
+      emberPos[j * 3 + 2] = on ? e.z + 0.8 : 0;
+    }
+    emberGeo.attributes.position.needsUpdate = true;
+    ember.intensity = 50 + Math.sin(ph * 4) * 10;
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

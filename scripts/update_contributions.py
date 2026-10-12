@@ -9,7 +9,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 USERNAME = "aniketshukla1"
-PALETTE = ("#1b2530", "#0e4429", "#006d32", "#26a641", "#39d353")
+PALETTE = ("#1e2027", "#4a3426", "#8a4f24", "#d4762a", "#ffb45c")  # graphite to molten amber, matching the name banner
 
 
 class CalendarParser(HTMLParser):
@@ -97,19 +97,19 @@ def render_heatmap(data):
 <title id="title">{escape(data['username'])}'s contribution calendar</title>
 <desc id="desc">{total} from {first} to {end}. Current streak: {stats['current_streak']} days. Longest streak: {stats['longest_streak']} days.</desc>
 <style>
-text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #c9d1d9; }}
+text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ece8e0; }}
 .day {{ animation: reveal .35s ease-out both; }}
 :root:target .day {{ animation: none; }}
 @keyframes reveal {{ from {{ opacity: 0; transform: translateY(-6px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 @media (prefers-reduced-motion: reduce) {{ .day {{ animation: none; }} }}
 </style>
-<rect x=".5" y=".5" width="859" height="271" rx="12" fill="#0d1117" stroke="#30363d"/>
-<path d="M1 44H859" stroke="#30363d"/>
-<circle cx="22" cy="23" r="4" fill="#ff5f57"/><circle cx="37" cy="23" r="4" fill="#febc2e"/><circle cx="52" cy="23" r="4" fill="#28c840"/>
-<text x="72" y="28" font-size="13">aniket@github: ~/activity</text>
-<text x="836" y="28" text-anchor="end" font-size="11" style="fill:#8b949e">last 12 months</text>''']
+<defs><radialGradient id="bg" cx="50%" cy="0%" r="95%"><stop offset="0" stop-color="#25272f"/><stop offset=".6" stop-color="#15171c"/><stop offset="1" stop-color="#0b0c10"/></radialGradient></defs>
+<rect x=".5" y=".5" width="859" height="271" rx="20" fill="url(#bg)" stroke="#ffffff" stroke-opacity=".08"/>
+<text x="24" y="31" font-size="11" letter-spacing="2.4" style="fill:#ffb45c">CONTRIBUTIONS</text>
+<text x="836" y="31" text-anchor="end" font-size="11" style="fill:#8e8a86">last 12 months</text>
+<path d="M24 44H836" stroke="#ffffff" stroke-opacity=".07"/>''']
     for row, label in ((1, "Mon"), (3, "Wed"), (5, "Fri")):
-        svg.append(f'<text x="24" y="{89 + row * 15}" font-size="10" style="fill:#8b949e">{label}</text>')
+        svg.append(f'<text x="24" y="{89 + row * 15}" font-size="10" style="fill:#8e8a86">{label}</text>')
     last_month = None
     for day in days:
         current = date.fromisoformat(day["date"])
@@ -118,17 +118,17 @@ text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation 
         x, y = 70 + col * step, 80 + row * 15
         # Label a month only where its first week fits, avoiding edge collisions.
         if current.day == 1 and col < weeks - 2 and current.month != last_month:
-            svg.append(f'<text x="{x:.2f}" y="65" font-size="10" style="fill:#8b949e">{current.strftime("%b")}</text>')
+            svg.append(f'<text x="{x:.2f}" y="65" font-size="10" style="fill:#8e8a86">{current.strftime("%b")}</text>')
             last_month = current.month
         delay = col * .025 + row * .04
         svg.append(f'<rect class="day" x="{x:.2f}" y="{y}" width="{step - 2:.2f}" height="12" rx="2" fill="{PALETTE[day["level"]]}" style="animation-delay:{delay:.3f}s"><title>{current}: {day["count"]:,} contributions</title></rect>')
-    svg.append(f'<text x="24" y="218" font-size="15" style="fill:#7ee787">{total}</text>')
-    svg.append('<text x="672" y="217" font-size="10" style="fill:#8b949e">Less</text>')
+    svg.append(f'<text x="24" y="218" font-size="15" style="fill:#ffb45c">{total}</text>')
+    svg.append('<text x="672" y="217" font-size="10" style="fill:#8e8a86">Less</text>')
     for level, color in enumerate(PALETTE):
         svg.append(f'<rect x="{706 + level * 15}" y="207" width="12" height="12" rx="2" fill="{color}"/>')
-    svg.append('<text x="788" y="217" font-size="10" style="fill:#8b949e">More</text>')
-    svg.append(f'<text x="24" y="245" font-size="11" style="fill:#8b949e">{stats["active_days"]} active days  ·  {stats["current_streak"]} day streak  ·  {stats["longest_streak"]} day best streak</text>')
-    svg.append(f'<text x="836" y="245" text-anchor="end" font-size="10" style="fill:#8b949e">through {end}</text>')
+    svg.append('<text x="788" y="217" font-size="10" style="fill:#8e8a86">More</text>')
+    svg.append(f'<text x="24" y="245" font-size="11" style="fill:#8e8a86">{stats["active_days"]} active days  ·  {stats["current_streak"]} day streak  ·  {stats["longest_streak"]} day best streak</text>')
+    svg.append(f'<text x="836" y="245" text-anchor="end" font-size="10" style="fill:#8e8a86">through {end}</text>')
     svg.append('</svg>')
     return '\n'.join(svg) + '\n'
 

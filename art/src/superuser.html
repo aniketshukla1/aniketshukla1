@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Superuser</title>
+<!-- The Superuser card, in Superuser's own brand (charcoal, violet, a root prompt). A glass window
+     floats in 3D: you ask, Superuser asks before it acts, you allow once, and it shows that nothing
+     left your Mac. An eight-second loop driven by the page clock, recorded by art/src/make.sh. -->
+<style>
+  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 300 600; font-display: block; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 400 500; font-display: block; }
+  :root { --violet: #8b8cf6; --violet-2: #b6b7ff; --ink: #ecebf2; --dim: #8d8ca3; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  .card {
+    position: fixed; inset: 0; border-radius: 3.8vh; overflow: hidden; color: var(--ink);
+    background:
+      radial-gradient(48% 70% at 74% 46%, rgba(108, 106, 240, 0.30), transparent 70%),
+      radial-gradient(70% 90% at 100% 0%, #1d1f33 0%, transparent 60%),
+      linear-gradient(135deg, #0b0c10 0%, #101116 55%, #14152a 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  }
+  /* A floor of faint grid lines running away in perspective, under the window. */
+  .floor { position: absolute; left: 30%; right: -20%; bottom: -30%; height: 70%; transform: perspective(60vh) rotateX(72deg); transform-origin: 50% 0;
+    background-image: linear-gradient(rgba(139, 140, 246, 0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 140, 246, 0.16) 1px, transparent 1px);
+    background-size: 6vh 6vh; mask-image: linear-gradient(to bottom, black, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black, transparent 80%); }
+
+  .brand { position: absolute; left: 6%; top: 50%; transform: translateY(-50%); width: 44%; }
+  .word { display: flex; align-items: center; gap: 1.6vh; margin: 0 0 3.6vh; font: 500 5.6vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: -0.01em; }
+  .word b { color: var(--violet); font-weight: 500; }
+  .word i { display: inline-block; width: 2.4vh; height: 4.6vh; background: var(--ink); font-style: normal; }
+  .kicker { margin: 0 0 2.4vh; font: 500 2.5vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.22em; text-transform: uppercase; color: var(--violet); }
+  .head { margin: 0; font: 600 8.6vh/1.02 "Geist", system-ui, sans-serif; letter-spacing: -0.035em; }
+  .soon { position: absolute; top: 8%; left: 6%; margin: 0; padding: 1.3vh 2.4vh; border-radius: 999px; font: 500 2.6vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.06em; color: var(--violet-2); box-shadow: inset 0 0 0 1px rgba(139, 140, 246, 0.45); background: rgba(139, 140, 246, 0.08); }
+
+  .scene { position: absolute; left: 50%; right: 3%; top: 0; bottom: 0; perspective: 120vh; }
+  .win {
+    position: absolute; left: 6%; top: 21%; width: 84%; border-radius: 2.6vh; transform-style: preserve-3d;
+    background: linear-gradient(160deg, rgba(40, 42, 62, 0.92), rgba(20, 21, 32, 0.94));
+    box-shadow: 0 6vh 12vh -4vh rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 255, 255, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+  }
+  .bar { display: flex; align-items: center; gap: 1.1vh; height: 6.4vh; padding: 0 2.4vh; border-bottom: 1px solid rgba(255, 255, 255, 0.07); font: 400 2.2vh/1 "Geist Mono", ui-monospace, monospace; color: var(--dim); }
+  .bar i { width: 1.4vh; height: 1.4vh; border-radius: 50%; background: rgba(255, 255, 255, 0.16); }
+  .bar span { margin-left: 1.4vh; }
+  .bar em { margin-left: auto; font-style: normal; color: #6ee7a8; }
+  .body { padding: 3.4vh 3.6vh 3.8vh; font: 400 3vh/1.5 "Geist Mono", ui-monospace, monospace; }
+  .ask { color: var(--ink); min-height: 4.2vh; }
+  .ask b { color: var(--violet); font-weight: 500; }
+  .caret { display: inline-block; width: 1.2vh; height: 2.8vh; margin-left: 0.3vh; vertical-align: -0.5vh; background: var(--violet-2); }
+  .perm { margin-top: 2.6vh; padding: 2.4vh 2.6vh; border-radius: 1.8vh; background: rgba(139, 140, 246, 0.1); box-shadow: inset 0 0 0 1px rgba(139, 140, 246, 0.35); transform-origin: 50% 0; }
+  .perm p { margin: 0 0 1.8vh; font-family: "Geist", system-ui, sans-serif; font-size: 2.9vh; }
+  .perm p code { font-family: "Geist Mono", ui-monospace, monospace; color: var(--violet-2); }
+  .btns { display: flex; gap: 1.4vh; }
+  .btn { padding: 1.2vh 2.4vh; border-radius: 1.2vh; font: 500 2.4vh/1 "Geist", system-ui, sans-serif; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); color: var(--ink); }
+  .btn.allow { background: var(--violet); color: #0c0c18; box-shadow: none; }
+  .btn.allow.pressed { transform: scale(0.95); background: var(--violet-2); }
+  .done { margin-top: 2.4vh; color: #9ff0c4; }
+  .done span { display: block; }
+  .done .zero { color: var(--violet-2); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="floor"></div>
+  <p class="soon">Coming soon</p>
+  <div class="brand">
+    <p class="word"><b>#</b><i></i>superuser</p>
+    <p class="kicker">A coworker that lives on your computer</p>
+    <h1 class="head">The AI you can tell everything.</h1>
+  </div>
+  <div class="scene">
+    <div class="win">
+      <div class="bar"><i></i><i></i><i></i><span>superuser — on this Mac</span><em>● offline</em></div>
+      <div class="body">
+        <div class="ask"><b>›</b> <span class="typed"></span><span class="caret"></span></div>
+        <div class="perm">
+          <p>Superuser wants to read <code>~/Documents/Invoices</code></p>
+          <div class="btns"><span class="btn allow">Allow once</span><span class="btn">Deny</span></div>
+        </div>
+        <div class="done"><span class="d1">✓ Read 3 files on this Mac</span><span class="d2 zero">↑ 0 bytes left this computer</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // One eight-second loop on the page clock, so a recording repeats exactly.
+  const LOOP = 8000, ASK = 'total my March invoices';
+  const $ = (s) => document.querySelector(s);
+  const win = $('.win'), typed = $('.typed'), caret = $('.caret'), perm = $('.perm'), allow = $('.allow'), d1 = $('.d1'), d2 = $('.d2');
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const ease = (v) => 1 - Math.pow(1 - v, 3);
+  function frame(now) {
+    const t = now % LOOP;
+    const ph = (t / LOOP) * Math.PI * 2;
+    // The window floats and turns a little, always facing the brand side.
+    win.style.transform = `rotateY(${-20 + Math.sin(ph) * 4}deg) rotateX(${7 + Math.sin(ph + 1) * 2}deg) translateZ(0) translateY(${Math.sin(ph * 2) * 0.8}vh)`;
+    const n = Math.round(clamp01((t - 300) / 1400) * ASK.length);
+    typed.textContent = ASK.slice(0, n);
+    caret.style.opacity = t < 1900 ? (Math.floor(t / 400) % 2 ? 0 : 1) : 0;
+    const p = ease(clamp01((t - 2000) / 450));
+    perm.style.opacity = p * (1 - clamp01((t - 7300) / 400));
+    perm.style.transform = `translateY(${(1 - p) * 3}vh) scale(${0.96 + 0.04 * p})`;
+    allow.classList.toggle('pressed', t > 3300 && t < 3550);
+    d1.style.opacity = clamp01((t - 3800) / 300) * (1 - clamp01((t - 7300) / 400));
+    d2.style.opacity = clamp01((t - 4300) / 300) * (1 - clamp01((t - 7300) / 400));
+    if (t > 7300) typed.style.opacity = 1 - clamp01((t - 7300) / 400); else typed.style.opacity = 1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mnesio</title>
+<!-- The mnesio card, in mnesio's own brand (deep navy, a cyan-to-blue node graph). The logo's graph,
+     built in 3D: glass nodes and ring nodes on lit edges; memory pulses run from the root to the
+     leaves and each node flares as one arrives. An eight-second loop, recorded by art/src/make.sh. -->
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<style>
+  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 300 600; font-display: block; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 400 500; font-display: block; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  .card { position: fixed; inset: 0; border-radius: 3.8vh; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07); }
+  .card canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .text { position: absolute; left: 52%; right: 5%; top: 50%; transform: translateY(-50%); color: #e8f1ff; }
+  .kicker { margin: 0 0 3vh; font: 500 3.2vh/1 "Geist Mono", ui-monospace, monospace; letter-spacing: 0.22em; text-transform: uppercase; color: #5fd3e0; }
+  .name { margin: 0; font: 600 19vh/0.9 "Geist", system-ui, sans-serif; letter-spacing: -0.055em;
+    background: linear-gradient(100deg, #3fd2c4 0%, #49a6f2 50%, #6d7cff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .line { margin: 3.4vh 0 0; font: 400 3.4vh/1.4 "Geist", system-ui, sans-serif; color: rgba(232, 241, 255, 0.7); max-width: 26em; }
+  .pill { position: absolute; top: 8%; right: 4.5%; margin: 0; padding: 1.3vh 2.4vh; border-radius: 999px; font: 500 2.6vh/1 "Geist Mono", ui-monospace, monospace; color: #07111f; background: linear-gradient(100deg, #3fd2c4, #6d7cff); }
+</style>
+</head>
+<body>
+<div class="card">
+  <p class="pill">Open source</p>
+  <div class="text">
+    <p class="kicker">Memory for AI agents</p>
+    <h1 class="name">mnesio</h1>
+    <p class="line">Learns from outcomes. Every change passes a safety gate.</p>
+  </div>
+</div>
+<script type="module">
+  import * as THREE from 'three';
+  import { RoomEnvironment } from './vendor/RoomEnvironment.js';
+
+  const LOOP = 8;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  document.querySelector('.card').prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.5;
+  const tex = (w, h, paint) => { const c = Object.assign(document.createElement('canvas'), { width: w, height: h }); paint(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
+  scene.background = tex(512, 180, (g, w, h) => {
+    let grad = g.createRadialGradient(w * 0.26, h * 0.5, 0, w * 0.26, h * 0.5, w * 0.5);
+    grad.addColorStop(0, '#13234a'); grad.addColorStop(0.5, '#0c1530'); grad.addColorStop(1, '#070b18');
+    g.fillStyle = grad; g.fillRect(0, 0, w, h);
+  });
+  const glowTex = tex(128, 128, (g) => {
+    const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grad.addColorStop(0, 'rgba(255,255,255,1)'); grad.addColorStop(0.25, 'rgba(255,255,255,0.45)'); grad.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
+  });
+
+  // The graph: a root, three children, six leaves, like the logo's tree grown into 3D.
+  const cyan = new THREE.Color('#1fc8b8'), blue = new THREE.Color('#2f6bff'), violet = new THREE.Color('#5a5cff');
+  const colorAt = (y) => cyan.clone().lerp(y > 0 ? violet : blue, Math.min(1, Math.abs(y) / 3.4 + 0.25));
+  const nodes = [{ p: new THREE.Vector3(0, 3.1, 0), ring: false, parent: -1, depth: 0 }];
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2 + 0.4;
+    nodes.push({ p: new THREE.Vector3(Math.cos(a) * 2.6, 0.9, Math.sin(a) * 2.6), ring: true, parent: 0, depth: 1 });
+  }
+  for (let i = 0; i < 3; i++) {
+    for (const s of [-1, 1]) {
+      const a = (i / 3) * Math.PI * 2 + 0.4 + s * 0.42;
+      nodes.push({ p: new THREE.Vector3(Math.cos(a) * 3.9, -1.7, Math.sin(a) * 3.9), ring: true, parent: 1 + i, depth: 2 });
+    }
+  }
+  const graph = new THREE.Group();
+  graph.position.set(-5.3, -0.2, 0);
+  scene.add(graph);
+  const sphereGeo = new THREE.SphereGeometry(0.62, 48, 32), ringGeo = new THREE.TorusGeometry(0.44, 0.16, 24, 64);
+  for (const n of nodes) {
+    n.color = colorAt(n.p.y);
+    n.mat = new THREE.MeshPhysicalMaterial({ color: n.color, emissive: n.color, emissiveIntensity: 0.2, roughness: 0.16, metalness: 0.15, clearcoat: 1, clearcoatRoughness: 0.06 });
+    n.mesh = new THREE.Mesh(n.ring ? ringGeo : sphereGeo, n.mat);
+    n.mesh.position.copy(n.p);
+    graph.add(n.mesh);
+    n.glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: n.color, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false }));
+    n.glow.scale.setScalar(3.0);
+    n.glow.position.copy(n.p);
+    graph.add(n.glow);
+    if (n.parent >= 0) {
+      const a = nodes[n.parent].p, b = n.p, len = a.distanceTo(b);
+      const edge = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, len, 12), new THREE.MeshStandardMaterial({ color: n.color, emissive: n.color, emissiveIntensity: 0.55, roughness: 0.4 }));
+      edge.position.copy(a).lerp(b, 0.5);
+      edge.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+      graph.add(edge);
+    }
+  }
+  // Pulses: each leaf receives one per loop, travelling root -> child -> leaf.
+  const leaves = nodes.filter((n) => n.depth === 2);
+  const pulses = leaves.map((leaf, k) => {
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xd9fbff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+    s.scale.setScalar(1.15);
+    graph.add(s);
+    return { s, leaf, mid: nodes[leaf.parent], start: 0.4 + k * 1.05 };
+  });
+  graph.add(new THREE.PointLight(0x5fd3e0, 30, 30, 1.5));
+
+  const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.1, 200);
+  camera.position.set(0, 1.8, 19);
+  camera.lookAt(0, 0.2, 0);
+  const flash = new Map(nodes.map((n) => [n, 0]));
+  function frame(now) {
+    const t = (now / 1000) % LOOP;
+    const ph = (t / LOOP) * Math.PI * 2;
+    graph.rotation.y = Math.sin(ph) * 0.55 + 0.2;
+    graph.rotation.x = Math.sin(ph + 0.8) * 0.06;
+    for (const n of nodes) flash.set(n, 0);
+    for (const pl of pulses) {
+      const u = (t - pl.start + LOOP) % LOOP;   // seconds since this pulse left the root
+      const d1 = 0.55, d2 = 0.6;
+      let pos = null;
+      if (u < d1) pos = nodes[0].p.clone().lerp(pl.mid.p, u / d1);
+      else if (u < d1 + d2) pos = pl.mid.p.clone().lerp(pl.leaf.p, (u - d1) / d2);
+      pl.s.visible = !!pos;
+      if (pos) pl.s.position.copy(pos);
+      // Nodes flare as a pulse passes through them, then settle.
+      const hit = (dt) => (dt >= 0 ? Math.exp(-dt / 0.35) : 0);
+      flash.set(nodes[0], Math.max(flash.get(nodes[0]), hit(u) * 0.7));
+      flash.set(pl.mid, Math.max(flash.get(pl.mid), hit(u - d1)));
+      flash.set(pl.leaf, Math.max(flash.get(pl.leaf), hit(u - d1 - d2) * 1.3));
+    }
+    for (const n of nodes) {
+      const f = flash.get(n);
+      n.mat.emissiveIntensity = 0.2 + f * 2.0;
+      n.glow.material.opacity = 0.18 + f * 0.6;
+      n.glow.scale.setScalar(3.0 + f * 1.6);
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>
