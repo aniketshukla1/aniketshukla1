@@ -10,7 +10,7 @@ The header and each project card are small 3D scenes, recorded to animated WebP.
 | `art/murmuration.webp` | `art/src/murmuration.html` | Murmuration's sunset: a flock forms its serif M and a falcon cuts through it ([Murmuration](https://github.com/aniketshukla1/murmuration)'s engine) |
 | `art/ferro.webp` | `art/src/ferro.html` | ferro's F forged in dark iron, heat climbing through it, embers rising, a code review behind (Three.js) |
 
-Every scene runs on a fixed loop, so the recordings repeat seamlessly. Each image has a `-still.webp` for visitors who prefer reduced motion. The card descriptions, tags and links are plain text in `README.md`, so they reflow on phones.
+Every scene runs on a fixed loop, so the recordings repeat seamlessly. Each image has a `-still.webp` for visitors who prefer reduced motion. The card descriptions, tags and links are plain text in `README.md`, so they reflow on phones. The LinkedIn, X and Instagram icons are plain SVG files in `art/icons/`.
 
 ## Re-render the art
 

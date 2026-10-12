@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <title>Instagram</title>
+  <defs>
+    <radialGradient id="glow" gradientUnits="userSpaceOnUse" cx="14.4" cy="51.4" r="61.4">
+      <stop offset="0" stop-color="#fdf497"/>
+      <stop offset="0.05" stop-color="#fdf497"/>
+      <stop offset="0.45" stop-color="#fd5949"/>
+      <stop offset="0.6" stop-color="#d6249f"/>
+      <stop offset="0.9" stop-color="#285aeb"/>
+    </radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.14"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#glow)"/>
+  <rect width="48" height="48" rx="12" fill="url(#sheen)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" fill="none" stroke="#fff" stroke-opacity="0.16"/>
+  <g fill="none" stroke="#fff" stroke-width="2.34">
+    <rect x="12.17" y="12.17" width="23.66" height="23.66" rx="6.37"/>
+    <circle cx="24" cy="24" r="5.51"/>
+  </g>
+  <circle cx="30.92" cy="17.06" r="1.56" fill="#fff"/>
+</svg>

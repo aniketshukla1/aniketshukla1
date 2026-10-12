@@ -9,7 +9,9 @@
 
 They run on your machine, ask before they act, and prove what they did.
 
-<a href="https://linkedin.com/in/aniketshukla1">LinkedIn</a> · <a href="https://x.com/aniket_shukla_">X</a> · <a href="https://instagram.com/itsaniketshuklaa">Instagram</a>
+<a href="https://linkedin.com/in/aniketshukla1"><img src="./art/icons/linkedin.svg" width="40" height="40" alt="LinkedIn" /></a>&nbsp;&nbsp;
+<a href="https://x.com/aniket_shukla_"><img src="./art/icons/x.svg" width="40" height="40" alt="X" /></a>&nbsp;&nbsp;
+<a href="https://instagram.com/itsaniketshuklaa"><img src="./art/icons/instagram.svg" width="40" height="40" alt="Instagram" /></a>
 
 <br />
 
