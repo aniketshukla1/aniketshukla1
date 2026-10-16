@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./art/name-still.webp" />
-  <img src="./art/name.webp" width="860" alt="Aniket Shukla, built in 3D: a laser line rises and lays the name block by block, each block landing hot and cooling to ceramic white, on a glossy studio floor. Staff Software Engineer, Synopsys, Bangalore." />
+  <img src="./art/name.webp" width="860" alt="Aniket Shukla, built in 3D: a laser line rises and lays the name block by block, each block landing hot and cooling to ceramic white, on a glossy studio floor. Staff Software Engineer, Bangalore." />
 </picture>
 
 ### I build AI tools you can trust.
