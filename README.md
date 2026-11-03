@@ -5,9 +5,7 @@
   <img src="./art/name.webp" width="860" alt="Aniket Shukla, built in 3D: a laser line rises and lays the name block by block, each block landing hot and cooling to ceramic white, on a glossy studio floor. Staff Software Engineer, Bangalore." />
 </picture>
 
-### I build AI tools you can trust.
-
-They run on your machine, ask before they act, and prove what they did.
+### I build AI Softwares you can trust !
 
 <a href="https://linkedin.com/in/aniketshukla1"><img src="./art/icons/linkedin.svg" width="40" height="40" alt="LinkedIn" /></a>&nbsp;&nbsp;
 <a href="https://x.com/aniket_shukla_"><img src="./art/icons/x.svg" width="40" height="40" alt="X" /></a>&nbsp;&nbsp;
