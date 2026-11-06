@@ -1,6 +1,6 @@
 # How this profile is made
 
-The header and the project cards are HTML pages rendered to WebP, once for GitHub's dark theme and once for light. Each card holds a real screenshot of the project, cropped into `art/shots/`. The Superuser and agent-cli screens are drawn in `art/src/card.html` from those projects' own text.
+The header and the project cards are HTML pages rendered to WebP, once for GitHub's dark theme and once for light. Each card holds a real screenshot of the project, cropped into `art/shots/`. The agent-cli screen is drawn in `art/src/card.html` from that project's own README.
 
 | Files | What they are |
 |---|---|

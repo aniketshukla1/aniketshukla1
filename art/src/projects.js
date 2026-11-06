@@ -1,8 +1,7 @@
 // The cards: what each project is, in one breath, and a real screen of it.
 export const PROJECTS = {
   superuser: {
-    name: 'Superuser', meta: 'macOS', soon: true, accent: '#8b8cf6',
-    logo: null, mark: '#',
+    name: 'Superuser', meta: 'Rust · macOS', accent: '#8b8cf6', logo: 'superuser.png', shot: 'superuser.webp',
     line: 'The AI you can tell everything. It runs on your machine, asks before it acts, and shows you everything that left.',
   },
   glaux: {

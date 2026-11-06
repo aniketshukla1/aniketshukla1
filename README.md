@@ -1,7 +1,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./art/header-dark.webp" />
   <source media="(prefers-color-scheme: light)" srcset="./art/header-light.webp" />
-  <img src="./art/header-light.webp" width="846" alt="Aniket Shukla. Staff Software Engineer at Synopsys, Bangalore. I build AI software you can trust." />
+  <img src="./art/header-light.webp" width="846" alt="Aniket Shukla. Staff Software Engineer in Bangalore. I build AI software you can trust." />
 </picture>
 
 <p align="center">
@@ -13,7 +13,7 @@
 ### Selected work
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/superuser-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/superuser-light.webp" /><img src="./art/cards/superuser-light.webp" width="418" alt="Superuser, coming soon. The AI you can tell everything. It runs on your machine, asks before it acts, and shows you everything that left." /></picture>
+<a href="https://github.com/aniketshukla1/superuser"><picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/superuser-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/superuser-light.webp" /><img src="./art/cards/superuser-light.webp" width="418" alt="Superuser. The AI you can tell everything. It runs on your machine, asks before it acts, and shows you everything that left. Screenshot of its approvals inbox." /></picture></a>
 <a href="https://github.com/aniketshukla1/glaux"><picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/glaux-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/glaux-light.webp" /><img src="./art/cards/glaux-light.webp" width="418" alt="Glaux. A multi-agent swarm that proves its work. Every step is signed onto a tamper-evident, hash-chained ledger. Screenshot of its console." /></picture></a>
 <a href="https://github.com/aniketshukla1/athenadb"><picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/athenadb-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/athenadb-light.webp" /><img src="./art/cards/athenadb-light.webp" width="418" alt="AthenaDB. Exact vector search in Rust, with crash-consistent storage. Screenshot of its dashboard's 3D view." /></picture></a>
 <a href="https://github.com/aniketshukla1/root"><picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/root-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/root-light.webp" /><img src="./art/cards/root-light.webp" width="418" alt="root. Monitoring tells you something is wrong. root tells you why, across 31 kinds of infrastructure. Screenshot of an incident overview." /></picture></a>
@@ -25,7 +25,7 @@
 <a href="https://github.com/aniketshukla1/agent-cli"><picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/agent-cli-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/agent-cli-light.webp" /><img src="./art/cards/agent-cli-light.webp" width="418" alt="agent-cli. A fast AI agent for your terminal, in Rust, with an interactive TUI, MCP and skills." /></picture></a>
 </p>
 
-Websites: [Glaux](https://aniketshukla1.github.io/glaux/) · [AthenaDB](https://aniketshukla1.github.io/athenadb/) · [root](https://aniketshukla1.github.io/root/) · [ferro](https://aniketshukla1.github.io/ferro/) · [mnesio](https://mnesio.github.io/mnesio/) · [Murmuration](https://aniketshukla1.github.io/murmuration/) · [Fiddlehead](https://aniketshukla1.github.io/fiddlehead/) · [sdlc-kit](https://aniketshukla1.github.io/sdlc-kit/)
+Websites: [Superuser](https://aniketshukla1.github.io/superuser/) · [Glaux](https://aniketshukla1.github.io/glaux/) · [AthenaDB](https://aniketshukla1.github.io/athenadb/) · [root](https://aniketshukla1.github.io/root/) · [ferro](https://aniketshukla1.github.io/ferro/) · [mnesio](https://mnesio.github.io/mnesio/) · [Murmuration](https://aniketshukla1.github.io/murmuration/) · [Fiddlehead](https://aniketshukla1.github.io/fiddlehead/) · [sdlc-kit](https://aniketshukla1.github.io/sdlc-kit/)
 
 ### Open source
 
