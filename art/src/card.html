@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Project card</title>
+<style>
+  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 100 900; }
+  :root[data-theme="dark"] { --card: #0f1319; --line: #2a313c; --text: #f0f3f6; --muted: #9198a1; --tile: #171c24; --tile-line: #2f3743; --frame: rgba(255,255,255,.14); }
+  :root[data-theme="light"] { --card: #ffffff; --line: #d1d9e0; --text: #1f2328; --muted: #59636e; --tile: #f6f8fa; --tile-line: #d1d9e0; --frame: rgba(0,0,0,.16); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { width: 418px; height: 306px; font-family: "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .card { position: relative; width: 418px; height: 306px; overflow: hidden; border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+  .card { --accent-ink: var(--accent); }
+  :root[data-theme="light"] .card { --accent-ink: color-mix(in srgb, var(--accent) 58%, #000); }
+  .glow { position: absolute; inset: 0; background: radial-gradient(70% 62% at 92% -6%, var(--accent), transparent 72%); opacity: .17; }
+  :root[data-theme="light"] .glow { opacity: .12; }
+  .head { position: absolute; left: 20px; right: 20px; top: 18px; display: flex; align-items: center; gap: 11px; }
+  .tile { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 8px; background: var(--tile); box-shadow: inset 0 0 0 1px var(--tile-line); overflow: hidden; }
+  .tile img { width: 20px; height: 20px; display: block; }
+  .tile img.full { width: 30px; height: 30px; }
+  .tile span { font: 600 15px/1 "Geist Mono", monospace; color: var(--accent-ink); letter-spacing: -.04em; }
+  h2 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.022em; color: var(--text); }
+  .meta { margin-left: auto; font: 500 11px/1 "Geist Mono", monospace; color: var(--muted); white-space: nowrap; }
+  .meta.soon { padding: 5px 8px; border-radius: 999px; color: var(--accent-ink); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+  p.line { position: absolute; left: 20px; right: 20px; top: 58px; margin: 0; font-size: 13.4px; line-height: 1.46; letter-spacing: -.004em; color: var(--muted); }
+  .shot { position: absolute; left: 20px; right: 20px; top: 112px; bottom: -2px; overflow: hidden; border-radius: 10px 10px 0 0; box-shadow: 0 0 0 1px var(--frame); background: #0b0d11; }
+  .shot > img { display: block; width: 100%; }
+  /* Screens drawn from the projects' own text, where there's no screenshot to show. */
+  .term { height: 100%; padding: 12px 14px; font: 400 8.6px/1.62 "Geist Mono", monospace; color: #c9d1d9; white-space: pre; background: #0b0d11; }
+  .term b { color: #a3e635; font-weight: 500; } .term i { color: #7d8590; font-style: normal; }
+  .win { height: 100%; font-size: 10.4px; color: #ecebf2; background: linear-gradient(160deg, #15162a, #0c0d13 70%); }
+  .bar { display: flex; align-items: center; gap: 4px; padding: 8px 12px; font: 400 8.6px/1 "Geist Mono", monospace; color: #8d8ca3; box-shadow: inset 0 -1px 0 rgba(255,255,255,.07); }
+  .bar u { width: 6px; height: 6px; border-radius: 50%; background: #34354a; } .bar span { margin-left: 8px; } .bar em { margin-left: auto; font-style: normal; color: #6ee7a8; }
+  .pane { padding: 13px 14px; font-family: "Geist Mono", monospace; font-size: 9.6px; line-height: 1.5; }
+  .perm { margin: 10px 0; padding: 10px 11px; border-radius: 8px; background: rgba(139,140,246,.1); box-shadow: inset 0 0 0 1px rgba(139,140,246,.32); font-family: "Geist", sans-serif; font-size: 10.6px; }
+  .perm code { font: 400 9.6px "Geist Mono", monospace; color: #b6b7ff; }
+  .btns { display: flex; gap: 6px; margin-top: 8px; } .btns span { padding: 4px 9px; border-radius: 5px; font-size: 9.4px; font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); } .btns .allow { background: #8b8cf6; color: #0c0c18; box-shadow: none; }
+  .done { color: #9ff0c4; }
+</style>
+</head>
+<body>
+<div class="card" id="card"></div>
+<script type="module">
+import { PROJECTS } from './projects.js';
+const q = new URLSearchParams(location.search);
+const theme = q.get('theme') || 'dark';
+document.documentElement.dataset.theme = theme;
+const p = PROJECTS[q.get('p')];
+const card = document.getElementById('card');
+card.style.setProperty('--accent', p.accent);
+const tile = p.logo
+  ? `<img class="${p.logoFull || p.logo.endsWith('png') ? 'full' : ''}" src="../logos/${p.logo.replace('{theme}', theme)}" alt="">`
+  : `<span>${p.mark}</span>`;
+const screens = {
+  'agent-cli': `<div class="term"><b>⚡ AGENT CLI</b>  <i>Model: claude-3-7-sonnet │ 🔌 2 MCPs │ 🧩 1 Skills</i>
+
+  🚀 AGENT CLI — Next-Gen AI Terminal Agent
+
+    <b>▶</b> 🤖 /model   <i>─ Choose AI model (Claude, GPT-4o, Gemini, Ollama)</i>
+      🎨 /theme   <i>─ Switch color theme (25 curated palettes)</i>
+      🧩 /skills  <i>─ Inspect and trigger local Agent skills</i>
+      🔌 /mcp     <i>─ Manage connected MCP servers</i>
+      📖 /help    <i>─ View full cheatsheet and shortcuts</i></div>`,
+  superuser: `<div class="win"><div class="bar"><u></u><u></u><u></u><span>superuser — on this Mac</span><em>● offline</em></div>
+    <div class="pane"><div>› total my March invoices</div>
+    <div class="perm">Superuser wants to read <code>~/Documents/Invoices</code><div class="btns"><span class="allow">Allow once</span><span>Deny</span></div></div>
+    <div class="done">✓ Read 3 files on this Mac<br>↑ 0 bytes left this computer</div></div></div>`,
+};
+card.innerHTML = `<div class="glow"></div>
+  <div class="head"><div class="tile">${tile}</div><h2>${p.name}</h2>
+    ${p.soon ? '<div class="meta soon">Coming soon</div>' : `<div class="meta">${p.meta}</div>`}</div>
+  <p class="line">${p.line}</p>
+  <div class="shot">${p.shot ? `<img src="../shots/${p.shot}" alt="">` : screens[q.get('p')]}</div>`;
+await document.fonts.ready;
+await Promise.all([...document.images].map((i) => i.decode().catch(() => {})));
+window.__ready = true;
+</script>
+</body>
+</html>

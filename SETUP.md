@@ -1,29 +1,29 @@
 # How this profile is made
 
-The header and each project card are small 3D scenes, recorded to animated WebP. Each one has its own identity, taken from the project's brand:
+The header and the project cards are HTML pages rendered to WebP, once for GitHub's dark theme and once for light. Each card holds a real screenshot of the project, cropped into `art/shots/`. The Superuser and agent-cli screens are drawn in `art/src/card.html` from those projects' own text.
 
-| Image | Page | Scene |
-|---|---|---|
-| `art/name.webp` | `art/src/name.html` | a laser rises and builds the name from blocks that land hot and cool to ceramic, on a glossy studio floor (Three.js) |
-| `art/superuser.webp` | `art/src/superuser.html` | Superuser's charcoal and violet: a glass window in 3D where it asks before it acts and shows that nothing left the computer (CSS 3D) |
-| `art/mnesio.webp` | `art/src/mnesio.html` | mnesio's node-graph logo built from glass nodes, with memory pulses running from the root to the leaves (Three.js) |
-| `art/murmuration.webp` | `art/src/murmuration.html` | Murmuration's sunset: a flock forms its serif M and a falcon cuts through it ([Murmuration](https://github.com/aniketshukla1/murmuration)'s engine) |
-| `art/ferro.webp` | `art/src/ferro.html` | ferro's F forged in dark iron, heat climbing through it, embers rising, a code review behind (Three.js) |
+| Files | What they are |
+|---|---|
+| `art/src/header.html` | The header |
+| `art/src/card.html`, `art/src/projects.js` | The card layout, and each project's name, line, logo and screenshot |
+| `art/header-*.webp`, `art/cards/*.webp` | The rendered images that `README.md` shows |
+| `activity-*.svg` | The activity chart, one bar per day, refreshed daily |
 
-Every scene runs on a fixed loop, so the recordings repeat seamlessly. Each image has a `-still.webp` for visitors who prefer reduced motion. The card descriptions, tags and links are plain text in `README.md`, so they reflow on phones. The LinkedIn, X and Instagram icons are plain SVG files in `art/icons/`.
+## Change a card or the header
 
-## Re-render the art
-
-After changing a scene in `art/src/`:
+Edit the page or `projects.js`, then run this from the repo root:
 
 ```sh
-art/src/make.sh
+node art/src/render.mjs            # everything
+node art/src/render.mjs glaux      # one card
 ```
 
-It serves the repo, records each loop in headless Chrome on a virtual clock (`art/src/record.mjs`), and encodes the WebP files (`art/src/encode.py`). It needs Node 22+, Chrome, Chromium, Edge or Brave, and uv (or Python 3 with Pillow). Open any page in `art/src/` through a local server to see it live.
+It needs Node 22+, Chrome and Python 3 with Pillow. Set `CHROME_PATH` if Chrome isn't in `/Applications`.
 
-`art/src/vendor/` holds Three.js and its RoomEnvironment add-on (MIT); `art/src/fonts/` holds Fraunces, Geist and Geist Mono (SIL OFL); `data/mnesio-logo.png` and `data/ferro-logo.png` are the projects' logos.
+To add a project, add it to `projects.js`, put a 2:1 screenshot in `art/shots/`, render, and add its `<picture>` to `README.md`.
 
-## Daily contribution refresh
+## Daily activity refresh
 
-`.github/workflows/update-profile-art.yml` runs around **11:47 IST** (06:17 UTC) and can be run by hand from the Actions tab. It checks the calendar logic (`python3 scripts/test_profile.py`), fetches the public calendar, and commits `contrib-heatmap.svg` and `data/contributions.json` when they change. It uses the workflow's built-in token; no secret is needed. An HTTP, parsing or validation error fails the run and leaves the last good graph in place.
+`.github/workflows/update-profile-art.yml` runs around **11:47 IST** (06:17 UTC) and can be run by hand from the Actions tab. It reads the public contribution calendar with `scripts/update_contributions.py`, redraws both `activity-*.svg` files and commits them if anything changed. `scripts/test_profile.py` checks the calendar logic, the SVGs, and that every image in `README.md` exists.
+
+`art/src/fonts/` holds Geist and Geist Mono (SIL OFL).

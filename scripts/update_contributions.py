@@ -9,7 +9,10 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 USERNAME = "aniketshukla1"
-PALETTE = ("#1e2027", "#4a3426", "#8a4f24", "#d4762a", "#ffb45c")  # graphite to molten amber, matching the name banner
+THEMES = {
+    "dark": {"card": "#0f1319", "line": "#2a313c", "text": "#f0f3f6", "muted": "#9198a1", "rest": "#2a313c", "from": "#818cf8", "to": "#2dd4bf"},
+    "light": {"card": "#ffffff", "line": "#d1d9e0", "text": "#1f2328", "muted": "#59636e", "rest": "#d1d9e0", "from": "#4f46e5", "to": "#0d9488"},
+}
 
 
 class CalendarParser(HTMLParser):
@@ -85,50 +88,38 @@ def summarize(days, today):
             "current_streak": streak, "longest_streak": longest}
 
 
-def render_heatmap(data):
+def render_activity(data, theme):
+    """One bar per day: a waveform of the year, in the same frame as the project cards."""
+    t = THEMES[theme]
     days, stats = data["days"], data["stats"]
-    first = date.fromisoformat(days[0]["date"])
-    start = first - timedelta(days=(first.weekday() + 1) % 7)
-    end = date.fromisoformat(days[-1]["date"])
-    weeks = (end - start).days // 7 + 1
-    step = 740 / weeks
+    first, end = date.fromisoformat(days[0]["date"]), date.fromisoformat(days[-1]["date"])
     total = f'{stats["total"]:,} contributions'
-    svg = [f'''<svg xmlns="http://www.w3.org/2000/svg" id="static" width="860" height="272" viewBox="0 0 860 272" role="img" aria-labelledby="title desc">
-<title id="title">{escape(data['username'])}'s contribution calendar</title>
+    width, height, left, floor, tallest = 846, 158, 22, 122, 56
+    step = (width - 2 * left) / len(days)
+    peak = max(day["count"] for day in days) or 1
+    svg = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
+<title id="title">{escape(data['username'])}'s contributions over the last 12 months</title>
 <desc id="desc">{total} from {first} to {end}. Current streak: {stats['current_streak']} days. Longest streak: {stats['longest_streak']} days.</desc>
 <style>
-text {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; fill: #ece8e0; }}
-.day {{ animation: reveal .35s ease-out both; }}
-:root:target .day {{ animation: none; }}
-@keyframes reveal {{ from {{ opacity: 0; transform: translateY(-6px); }} to {{ opacity: 1; transform: translateY(0); }} }}
+text {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: {t["muted"]}; }}
+.day {{ transform-box: fill-box; transform-origin: bottom; animation: rise .5s cubic-bezier(.2, .7, .2, 1) both; }}
+@keyframes rise {{ from {{ transform: scaleY(0); }} to {{ transform: scaleY(1); }} }}
 @media (prefers-reduced-motion: reduce) {{ .day {{ animation: none; }} }}
 </style>
-<defs><radialGradient id="bg" cx="50%" cy="0%" r="95%"><stop offset="0" stop-color="#25272f"/><stop offset=".6" stop-color="#15171c"/><stop offset="1" stop-color="#0b0c10"/></radialGradient></defs>
-<rect x=".5" y=".5" width="859" height="271" rx="20" fill="url(#bg)" stroke="#ffffff" stroke-opacity=".08"/>
-<text x="24" y="31" font-size="11" letter-spacing="2.4" style="fill:#ffb45c">CONTRIBUTIONS</text>
-<text x="836" y="31" text-anchor="end" font-size="11" style="fill:#8e8a86">last 12 months</text>
-<path d="M24 44H836" stroke="#ffffff" stroke-opacity=".07"/>''']
-    for row, label in ((1, "Mon"), (3, "Wed"), (5, "Fri")):
-        svg.append(f'<text x="24" y="{89 + row * 15}" font-size="10" style="fill:#8e8a86">{label}</text>')
+<defs><linearGradient id="ink" gradientUnits="userSpaceOnUse" x1="{left}" y1="0" x2="{width - left}" y2="0"><stop offset="0" stop-color="{t["from"]}"/><stop offset="1" stop-color="{t["to"]}"/></linearGradient></defs>
+<rect x=".5" y=".5" width="{width - 1}" height="{height - 1}" rx="14" fill="{t["card"]}" stroke="{t["line"]}"/>
+<text x="{left}" y="40" font-size="24" font-weight="600" letter-spacing="-.4" style="fill:{t["text"]}">{total}</text>
+<text x="{width - left}" y="32" text-anchor="end" font-size="12">{stats["active_days"]} active days  ·  {stats["current_streak"]}-day streak  ·  {stats["longest_streak"]}-day best</text>''']
     last_month = None
-    for day in days:
+    for index, day in enumerate(days):
         current = date.fromisoformat(day["date"])
-        offset = (current - start).days
-        col, row = divmod(offset, 7)
-        x, y = 70 + col * step, 80 + row * 15
-        # Label a month only where its first week fits, avoiding edge collisions.
-        if current.day == 1 and col < weeks - 2 and current.month != last_month:
-            svg.append(f'<text x="{x:.2f}" y="65" font-size="10" style="fill:#8e8a86">{current.strftime("%b")}</text>')
+        x = left + index * step
+        if current.day == 1 and current.month != last_month and index < len(days) - 14:
+            svg.append(f'<text x="{x:.1f}" y="142" font-size="10.5">{current.strftime("%b")}</text>')
             last_month = current.month
-        delay = col * .025 + row * .04
-        svg.append(f'<rect class="day" x="{x:.2f}" y="{y}" width="{step - 2:.2f}" height="12" rx="2" fill="{PALETTE[day["level"]]}" style="animation-delay:{delay:.3f}s"><title>{current}: {day["count"]:,} contributions</title></rect>')
-    svg.append(f'<text x="24" y="218" font-size="15" style="fill:#ffb45c">{total}</text>')
-    svg.append('<text x="672" y="217" font-size="10" style="fill:#8e8a86">Less</text>')
-    for level, color in enumerate(PALETTE):
-        svg.append(f'<rect x="{706 + level * 15}" y="207" width="12" height="12" rx="2" fill="{color}"/>')
-    svg.append('<text x="788" y="217" font-size="10" style="fill:#8e8a86">More</text>')
-    svg.append(f'<text x="24" y="245" font-size="11" style="fill:#8e8a86">{stats["active_days"]} active days  ·  {stats["current_streak"]} day streak  ·  {stats["longest_streak"]} day best streak</text>')
-    svg.append(f'<text x="836" y="245" text-anchor="end" font-size="10" style="fill:#8e8a86">through {end}</text>')
+        bar = 1.5 if not day["count"] else 4 + (tallest - 4) * (day["count"] / peak) ** .5
+        fill = t["rest"] if not day["count"] else "url(#ink)"
+        svg.append(f'<rect class="day" x="{x:.1f}" y="{floor - bar:.1f}" width="{max(step - .7, 1):.1f}" height="{bar:.1f}" fill="{fill}" style="animation-delay:{index * .0018:.3f}s"/>')
     svg.append('</svg>')
     return '\n'.join(svg) + '\n'
 
@@ -142,10 +133,10 @@ def main():
         raise ValueError("Calendar is incomplete or stale; keeping the existing profile art")
     data = {"username": USERNAME, "generated_on": today.isoformat(),
             "source": request.full_url, "days": days, "stats": summarize(days, today)}
-    svg = render_heatmap(data)
     (ROOT / "data").mkdir(exist_ok=True)
     (ROOT / "data/contributions.json").write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-    (ROOT / "contrib-heatmap.svg").write_text(svg, encoding="utf-8")
+    for theme in THEMES:
+        (ROOT / f"activity-{theme}.svg").write_text(render_activity(data, theme), encoding="utf-8")
     print(f"Saved {len(days)} days and {data['stats']['total']:,} contributions for {USERNAME}")
 
 

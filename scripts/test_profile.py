@@ -2,9 +2,10 @@
 from datetime import date
 import json
 from pathlib import Path
+import re
 from xml.etree import ElementTree as ET
 
-from update_contributions import parse_calendar, summarize, render_heatmap
+from update_contributions import THEMES, parse_calendar, render_activity, summarize
 
 
 def check():
@@ -39,7 +40,7 @@ def check():
         else:
             raise AssertionError("Invalid calendar was accepted")
 
-    svg = render_heatmap({"username": "aniketshukla1", "days": days, "stats": stats})
+    svg = render_activity({"username": "aniketshukla1", "days": days, "stats": stats}, "dark")
     root = ET.fromstring(svg)
     cells = root.findall('.//{http://www.w3.org/2000/svg}rect[@class="day"]')
     assert len(cells) == 3
@@ -48,7 +49,11 @@ def check():
     assert '<script' not in svg
     saved = json.loads((Path(__file__).resolve().parents[1] / "data/contributions.json").read_text())
     assert saved["stats"] == summarize(saved["days"], date.fromisoformat(saved["generated_on"]))
-    assert (Path(__file__).resolve().parents[1] / "contrib-heatmap.svg").read_text() == render_heatmap(saved)
+    for theme in THEMES:
+        assert (Path(__file__).resolve().parents[1] / f"activity-{theme}.svg").read_text() == render_activity(saved, theme)
+    readme = (Path(__file__).resolve().parents[1] / "README.md").read_text()
+    for reference in re.findall(r'(?:src|srcset)="\./([^"#]+)', readme):
+        assert (Path(__file__).resolve().parents[1] / reference).exists(), f"README points at a missing file: {reference}"
     # The shipped images must work inside GitHub's image-only README sandbox.
     for path in Path(__file__).resolve().parents[1].glob("*.svg"):
         root = ET.parse(path).getroot()

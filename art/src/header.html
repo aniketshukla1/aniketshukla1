@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Header</title>
+<style>
+  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 100 900; }
+  :root[data-theme="dark"] { --ink-a: #ffffff; --ink-b: #a9b1bc; --muted: #9198a1; --grid: rgba(255,255,255,.075); --pill: #2a313c; --glow-a: rgba(99,102,241,.26); --glow-b: rgba(45,212,191,.13); }
+  :root[data-theme="light"] { --ink-a: #0b0f14; --ink-b: #4a525c; --muted: #59636e; --grid: rgba(15,23,42,.085); --pill: #d1d9e0; --glow-a: rgba(99,102,241,.13); --glow-b: rgba(45,212,191,.11); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { width: 846px; height: 300px; overflow: hidden; font-family: "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { position: relative; width: 846px; height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .glow { position: absolute; inset: 0; background:
+    radial-gradient(38% 62% at 34% 42%, var(--glow-a), transparent 72%),
+    radial-gradient(34% 58% at 68% 50%, var(--glow-b), transparent 72%); }
+  .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 42px 42px; background-position: center center;
+    -webkit-mask-image: radial-gradient(56% 74% at 50% 50%, #000 12%, transparent 100%); mask-image: radial-gradient(56% 74% at 50% 50%, #000 12%, transparent 100%); }
+  .role { position: relative; margin: 0 0 16px; padding: 7px 14px; border-radius: 999px; font: 500 12px/1 "Geist Mono", monospace; letter-spacing: .01em; color: var(--muted); box-shadow: inset 0 0 0 1px var(--pill); }
+  h1 { position: relative; margin: 0; font-size: 92px; line-height: 1.02; font-weight: 600; letter-spacing: -.052em; padding: 0 8px 6px;
+    background: linear-gradient(180deg, var(--ink-a) 30%, var(--ink-b)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tag { position: relative; margin: 10px 0 0; font-size: 24px; letter-spacing: -.018em; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="glow"></div><div class="grid"></div>
+  <p class="role">Staff Software Engineer · Synopsys · Bangalore</p>
+  <h1>Aniket Shukla</h1>
+  <p class="tag">I build AI software you can trust.</p>
+</div>
+<script type="module">
+document.documentElement.dataset.theme = new URLSearchParams(location.search).get('theme') || 'dark';
+await document.fonts.ready;
+window.__ready = true;
+</script>
+</body>
+</html>
