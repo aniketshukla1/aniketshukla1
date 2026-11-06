@@ -25,7 +25,7 @@
 <a href="https://github.com/aniketshukla1/agent-cli"><picture><source media="(prefers-color-scheme: dark)" srcset="./art/cards/agent-cli-dark.webp" /><source media="(prefers-color-scheme: light)" srcset="./art/cards/agent-cli-light.webp" /><img src="./art/cards/agent-cli-light.webp" width="418" alt="agent-cli. A fast AI agent for your terminal, in Rust, with an interactive TUI, MCP and skills." /></picture></a>
 </p>
 
-Websites: [Superuser](https://aniketshukla1.github.io/superuser/) · [Glaux](https://aniketshukla1.github.io/glaux/) · [AthenaDB](https://aniketshukla1.github.io/athenadb/) · [root](https://aniketshukla1.github.io/root/) · [ferro](https://aniketshukla1.github.io/ferro/) · [mnesio](https://mnesio.github.io/mnesio/) · [Murmuration](https://aniketshukla1.github.io/murmuration/) · [Fiddlehead](https://aniketshukla1.github.io/fiddlehead/) · [sdlc-kit](https://aniketshukla1.github.io/sdlc-kit/)
+Websites: [Glaux](https://aniketshukla1.github.io/glaux/) · [AthenaDB](https://aniketshukla1.github.io/athenadb/) · [root](https://aniketshukla1.github.io/root/) · [ferro](https://aniketshukla1.github.io/ferro/) · [mnesio](https://mnesio.github.io/mnesio/) · [Murmuration](https://aniketshukla1.github.io/murmuration/) · [Fiddlehead](https://aniketshukla1.github.io/fiddlehead/) · [sdlc-kit](https://aniketshukla1.github.io/sdlc-kit/)
 
 ### Open source
 
