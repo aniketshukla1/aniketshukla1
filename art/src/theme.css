@@ -1,0 +1,10 @@
+/* Fonts and colours shared by the cards and their link strips. */
+@font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 100 900; }
+:root[data-theme="dark"] { --card: #0f1319; --line: #2a313c; --text: #f0f3f6; --muted: #9198a1; --tile: #171c24; --tile-line: #2f3743; --frame: rgba(255,255,255,.14); }
+:root[data-theme="light"] { --card: #ffffff; --line: #d1d9e0; --text: #1f2328; --muted: #59636e; --tile: #f6f8fa; --tile-line: #d1d9e0; --frame: rgba(0,0,0,.16); }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: transparent; }
+body { width: 418px; overflow: hidden; font-family: "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.card, .strip { --accent-ink: var(--accent); }
+:root[data-theme="light"] .card, :root[data-theme="light"] .strip { --accent-ink: color-mix(in srgb, var(--accent) 58%, #000); }

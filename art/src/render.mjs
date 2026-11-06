@@ -1,4 +1,4 @@
-// Renders the header and project cards to WebP in both themes: serves the repo, opens each page in
+// Renders the header, project cards and link strips to WebP in both themes: serves the repo, opens each page in
 // headless Chrome at twice its size, and takes a screenshot on a transparent background.
 //
 //   node art/src/render.mjs [names...]      (needs Node 22+, Chrome and Python 3 with Pillow)
@@ -10,7 +10,7 @@ import { extname, join } from 'node:path';
 import { PROJECTS } from './projects.js';
 
 const chromePath = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const server = createServer((req, res) => {
   const path = join(process.cwd(), decodeURIComponent(new URL(req.url, 'http://x').pathname));
   if (!existsSync(path)) { res.writeHead(404).end(); return; }
@@ -47,6 +47,8 @@ const shoot = async (url, width, height, out) => {
     if (r.result.result?.value) break;
     if (i === 99) throw new Error(`${url} never became ready`);
   }
+  const problem = (await send('Runtime.evaluate', { expression: 'window.__problem || null', returnByValue: true })).result.result?.value;
+  if (problem) throw new Error(`${url}: ${problem}`);
   await sleep(60);
   const shot = await send('Page.captureScreenshot', { format: 'png' });
   const png = join(tmpdir(), `profile-${port}.png`);
@@ -62,10 +64,13 @@ Image.open(sys.argv[1]).save(sys.argv[2], 'WEBP', quality=90, alpha_quality=100,
 const wanted = process.argv.slice(2);
 const want = (n) => !wanted.length || wanted.includes(n);
 mkdirSync('art/cards', { recursive: true });
+mkdirSync('art/links', { recursive: true });
 for (const theme of ['dark', 'light']) {
   if (want('header')) await shoot(`${base}/header.html?theme=${theme}`, 846, 300, `art/header-${theme}.webp`);
   for (const name of Object.keys(PROJECTS)) {
-    if (want(name)) await shoot(`${base}/card.html?p=${name}&theme=${theme}`, 418, 306, `art/cards/${name}-${theme}.webp`);
+    if (!want(name)) continue;
+    await shoot(`${base}/card.html?p=${name}&theme=${theme}`, 418, 332, `art/cards/${name}-${theme}.webp`);
+    await shoot(`${base}/link.html?p=${name}&theme=${theme}`, 418, 40, `art/links/${name}-${theme}.webp`);
   }
 }
 ws.close();

@@ -3,17 +3,10 @@
 <head>
 <meta charset="utf-8">
 <title>Project card</title>
+<link rel="stylesheet" href="theme.css">
 <style>
-  @font-face { font-family: "Geist"; src: url(fonts/geist-normal.woff2) format("woff2"); font-weight: 100 900; }
-  @font-face { font-family: "Geist Mono"; src: url(fonts/geist-mono-normal.woff2) format("woff2"); font-weight: 100 900; }
-  :root[data-theme="dark"] { --card: #0f1319; --line: #2a313c; --text: #f0f3f6; --muted: #9198a1; --tile: #171c24; --tile-line: #2f3743; --frame: rgba(255,255,255,.14); }
-  :root[data-theme="light"] { --card: #ffffff; --line: #d1d9e0; --text: #1f2328; --muted: #59636e; --tile: #f6f8fa; --tile-line: #d1d9e0; --frame: rgba(0,0,0,.16); }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: transparent; }
-  body { width: 418px; height: 306px; font-family: "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  .card { position: relative; width: 418px; height: 306px; overflow: hidden; border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
-  .card { --accent-ink: var(--accent); }
-  :root[data-theme="light"] .card { --accent-ink: color-mix(in srgb, var(--accent) 58%, #000); }
+  body { height: 332px; }
+  .card { position: relative; width: 418px; height: 332px; overflow: hidden; border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
   .glow { position: absolute; inset: 0; background: radial-gradient(70% 62% at 92% -6%, var(--accent), transparent 72%); opacity: .17; }
   :root[data-theme="light"] .glow { opacity: .12; }
   .head { position: absolute; left: 20px; right: 20px; top: 18px; display: flex; align-items: center; gap: 11px; }
@@ -22,9 +15,15 @@
   .tile img.full { width: 30px; height: 30px; }
   .tile span { font: 600 15px/1 "Geist Mono", monospace; color: var(--accent-ink); letter-spacing: -.04em; }
   h2 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.022em; color: var(--text); }
-  .meta { margin-left: auto; font: 500 11px/1 "Geist Mono", monospace; color: var(--muted); white-space: nowrap; }
+  .repo { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .repo svg { width: 14px; height: 14px; fill: currentColor; }
   p.line { position: absolute; left: 20px; right: 20px; top: 58px; margin: 0; font-size: 13.4px; line-height: 1.46; letter-spacing: -.004em; color: var(--muted); }
-  .shot { position: absolute; left: 20px; right: 20px; top: 112px; bottom: -2px; overflow: hidden; border-radius: 10px 10px 0 0; box-shadow: 0 0 0 1px var(--frame); background: #0b0d11; }
+  .chips { position: absolute; left: 20px; right: 20px; top: 106px; display: flex; gap: 5px; }
+  .chip { display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px 0 7px; border-radius: 999px; font-size: 11.5px; font-weight: 500; letter-spacing: -.003em; white-space: nowrap;
+    color: var(--c); background: color-mix(in srgb, var(--c) 11%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 32%, transparent); }
+  .chip svg { width: 12px; height: 12px; fill: currentColor; flex: none; }
+  .chip i { width: 7px; height: 7px; margin: 0 1px; border-radius: 50%; background: currentColor; flex: none; }
+  .shot { position: absolute; left: 20px; right: 20px; top: 140px; bottom: -2px; overflow: hidden; border-radius: 10px 10px 0 0; box-shadow: 0 0 0 1px var(--frame); background: #0b0d11; }
   .shot > img { display: block; width: 100%; }
   /* A screen drawn from the project's own README, where there's no screenshot to show. */
   .term { height: 100%; padding: 12px 14px; font: 400 8.6px/1.62 "Geist Mono", monospace; color: #c9d1d9; white-space: pre; background: #0b0d11; }
@@ -35,6 +34,7 @@
 <div class="card" id="card"></div>
 <script type="module">
 import { PROJECTS } from './projects.js';
+import { TECH, GITHUB } from './tech.js';
 const q = new URLSearchParams(location.search);
 const theme = q.get('theme') || 'dark';
 document.documentElement.dataset.theme = theme;
@@ -44,6 +44,12 @@ card.style.setProperty('--accent', p.accent);
 const tile = p.logo
   ? `<img class="${p.logoFull || p.logo.endsWith('png') ? 'full' : ''}" src="../logos/${p.logo.replace('{theme}', theme)}" alt="">`
   : `<span>${p.mark}</span>`;
+const chips = p.stack.map((name) => {
+  const t = TECH[name];
+  if (!t) throw new Error(`no badge colours for ${name}`);
+  const mark = t.icon ? `<svg viewBox="0 0 24 24"><path d="${t.icon}"/></svg>` : '<i></i>';
+  return `<div class="chip" style="--c:${t[theme]}">${mark}${name}</div>`;
+}).join('');
 const screens = {
   'agent-cli': `<div class="term"><b>⚡ AGENT CLI</b>  <i>Model: claude-3-7-sonnet │ 🔌 2 MCPs │ 🧩 1 Skills</i>
 
@@ -57,11 +63,16 @@ const screens = {
 };
 card.innerHTML = `<div class="glow"></div>
   <div class="head"><div class="tile">${tile}</div><h2>${p.name}</h2>
-    <div class="meta">${p.meta}</div></div>
+    <div class="repo"><svg viewBox="0 0 24 24"><path d="${GITHUB}"/></svg>GitHub ↗</div></div>
   <p class="line">${p.line}</p>
+  <div class="chips">${chips}</div>
   <div class="shot">${p.shot ? `<img src="../shots/${p.shot}" alt="">` : screens[q.get('p')]}</div>`;
 await document.fonts.ready;
 await Promise.all([...document.images].map((i) => i.decode().catch(() => {})));
+const row = card.querySelector('.chips');
+const line = card.querySelector('.line');
+window.__problem = row.scrollWidth > row.clientWidth ? `badges overflow by ${row.scrollWidth - row.clientWidth}px`
+  : line.getClientRects().length && line.offsetHeight > 42 ? 'the line runs past two rows' : null;
 window.__ready = true;
 </script>
 </body>
