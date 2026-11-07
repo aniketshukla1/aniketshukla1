@@ -4,7 +4,7 @@ export const PROJECTS = {
     name: 'Superuser', accent: '#8b8cf6', logo: 'superuser.png', shot: 'superuser.webp',
     stack: ['Rust', 'Tauri', 'React', 'TypeScript', 'macOS'],
     line: 'The AI you can tell everything. It runs on your machine, asks before it acts, and shows you everything that left.',
-    link: { label: 'Quickstart', shown: 'github.com/aniketshukla1/superuser', icon: 'book' },
+    link: { label: 'Website', shown: 'aniketshukla1.github.io/superuser', icon: 'globe' },
   },
   'glaux': {
     name: 'Glaux', accent: '#2dd4bf', logo: 'glaux.svg', shot: 'glaux.webp',
