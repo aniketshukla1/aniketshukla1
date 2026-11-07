@@ -58,7 +58,7 @@ export const PROJECTS = {
     name: 'Verso', accent: '#93a2f2', logo: 'verso.png', shot: 'verso.webp',
     stack: ['TypeScript', 'React Native', 'Expo', 'PostgreSQL'],
     line: 'Scan a food label and see which ingredients are banned or restricted, where, and who decided, with sources.',
-    link: { label: 'Quick start', shown: 'github.com/aniketshukla1/verso', icon: 'book' },
+    link: { label: 'Website', shown: 'aniketshukla1.github.io/verso', icon: 'globe' },
   },
   'agent-cli': {
     name: 'agent-cli', accent: '#a3e635', logo: null, mark: '›_',
